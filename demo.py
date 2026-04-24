@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import json
 import random
 from pathlib import Path
@@ -99,10 +100,17 @@ def prompt_card(item: dict, preferred_language: str) -> str:
     """
 
 
-def feedback_card(message: str, positive: bool = True) -> str:
+def feedback_card(message: str, positive: bool = True, title: str = "Tutor feedback") -> str:
     tone = "#2a9d8f" if positive else "#d95f5f"
     background = "#ecf8f4" if positive else "#fff1ef"
-    return f"<div style='border-left:5px solid {tone};background:{background};padding:12px 14px;border-radius:12px'>{message}</div>"
+    safe_title = html.escape(title)
+    safe_message = html.escape(message)
+    return (
+        f"<div style='border-left:5px solid {tone};background:{background};padding:12px 14px;border-radius:12px'>"
+        f"<div style='font-weight:700;margin-bottom:6px'>{safe_title}</div>"
+        f"<div>{safe_message}</div>"
+        "</div>"
+    )
 
 
 def scenario_card() -> str:
@@ -190,6 +198,19 @@ def session_banner(learner_name: str, preferred_language: str) -> str:
     """
 
 
+def item_question_text(item: dict, preferred_language: str) -> str:
+    reply_language = choose_reply_language(preferred_language, preferred_language)
+    return localized_stem(item, reply_language)
+
+
+def answer_label(raw_response: str, parsed: int | None) -> str:
+    if parsed is not None:
+        return str(parsed)
+    if raw_response.strip():
+        return raw_response.strip()
+    return "no answer"
+
+
 def start_session(learner_name: str, learner_choice: str, preferred_language: str):
     # Start a new learner or switch to an existing learner, then refresh the app and HTML dashboard.
     preferred_language = (preferred_language or "kin").lower()
@@ -217,7 +238,11 @@ def start_session(learner_name: str, learner_choice: str, preferred_language: st
         prompt_card(item, preferred_language),
         gr.update(choices=options, value=None),
         "",
-        feedback_card("Session ready. Start with tap, text, or microphone.", positive=True),
+        feedback_card(
+            "The first question is shown above. After each answer, this box will explain the last question while the next one loads.",
+            positive=True,
+            title="Session ready",
+        ),
         report_html,
         learner_html,
         system_html,
@@ -246,7 +271,7 @@ def submit_answer(choice: str, typed_answer: str, state: dict):
             "",
             gr.update(),
             "",
-            feedback_card("Start a learner session first.", positive=False),
+            feedback_card("Start a learner session first.", positive=False, title="Action needed"),
             "",
             "",
             refresh_system_dashboard(),
@@ -258,6 +283,7 @@ def submit_answer(choice: str, typed_answer: str, state: dict):
         )
 
     item = state["current_item"]
+    question_text = item_question_text(item, state["preferred_language"])
     raw_response = typed_answer.strip() if typed_answer and typed_answer.strip() else choice
     correct, parsed = score_response(item, raw_response)
     detected = detect_language(raw_response or "")
@@ -268,7 +294,13 @@ def submit_answer(choice: str, typed_answer: str, state: dict):
     save_attempt(DB_PATH, state["learner_id"], item["id"], item["skill"], correct, raw_response or "", parsed, detected)
 
     feedback_payload = lora_service.generate_feedback(item, correct, reply_language)
-    feedback_text = feedback_payload["text"] + f" Response language detected: {detected or 'unknown'}."
+    feedback_text = (
+        f"Previous question: {question_text} "
+        f"Your answer: {answer_label(raw_response or '', parsed)}. "
+        f"{feedback_payload['text']} "
+        f"Response language detected: {detected or 'unknown'}. "
+        "A new question is now shown above."
+    )
     if feedback_payload.get("error"):
         feedback_text += " Template feedback was used because the tiny local text model was not confident enough."
 
@@ -290,7 +322,7 @@ def submit_answer(choice: str, typed_answer: str, state: dict):
         prompt_card(next_item, state["preferred_language"]),
         gr.update(choices=options, value=None),
         "",
-        feedback_card(feedback_text, positive=correct),
+        feedback_card(feedback_text, positive=correct, title="Previous answer result"),
         report_html,
         learner_html,
         system_html,
@@ -345,7 +377,11 @@ with gr.Blocks(title="Early Math Tutor Offline") as demo:
                         submit_btn = gr.Button("Submit answer", variant="primary")
                         clear_btn = gr.Button("Clear answer")
                     feedback_html = gr.HTML(
-                        feedback_card("The first activity will appear here after you start a learner session.", positive=True)
+                        feedback_card(
+                            "The first activity will appear here after you start a learner session.",
+                            positive=True,
+                            title="Tutor feedback",
+                        )
                     )
                 with gr.Column(scale=5):
                     gr.Markdown("### Microphone response")

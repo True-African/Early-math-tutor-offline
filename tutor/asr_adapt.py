@@ -122,6 +122,24 @@ class OfflineASRService:
         self._pipe = None
         self._load_error = None
 
+    def availability_message(self) -> str:
+        if pipeline is None and not self.model_path:
+            return (
+                "Speech-to-text is optional in this lightweight build. "
+                "Use tap or typed answers, or install requirements-advanced.txt and add a local model under models/asr."
+            )
+        if pipeline is None:
+            return (
+                "Speech-to-text dependencies are not installed in this lightweight build yet. "
+                "Install requirements-advanced.txt to enable local transcription."
+            )
+        if not self.model_path:
+            return (
+                "No local speech-to-text model was found under models/asr. "
+                "Use tap or typed answers, or place a local Whisper model there."
+            )
+        return "Local speech-to-text is ready to load."
+
     def available(self) -> bool:
         return pipeline is not None and bool(self.model_path)
 
@@ -129,7 +147,7 @@ class OfflineASRService:
         if self._pipe is not None:
             return True
         if not self.available():
-            self._load_error = "transformers is not installed or no local ASR model path is configured."
+            self._load_error = self.availability_message()
             return False
         try:
             # A small local Whisper checkpoint keeps the app offline at inference time.
@@ -164,7 +182,7 @@ class OfflineASRService:
         return {
             "status": "fallback_only",
             "text": "",
-            "message": "Microphone audio was captured, but no local ASR model is installed yet. Use tap or typed answer, or place a local Whisper model under models/asr.",
+            "message": "Microphone audio was captured. " + self.availability_message(),
         }
 
     def status(self) -> dict:
@@ -173,7 +191,7 @@ class OfflineASRService:
             if ready:
                 return {"ready": True, "message": f"Local ASR model loaded from {self.model_path}."}
             return {"ready": False, "message": self._load_error or "Local ASR model path configured, but not yet loaded."}
-        return {"ready": False, "message": self._load_error or "No local ASR model configured yet."}
+        return {"ready": False, "message": self._load_error or self.availability_message()}
 
 
 def asr_status_snapshot(model_path: str | None) -> dict:

@@ -6,6 +6,7 @@ __pycache__/
 .cache/
 data/local_store.sqlite
 models/asr/
+models/asr_quantized/
 models/feedback_base/
 models/lora_numeracy_adapter/
 !models/README.md

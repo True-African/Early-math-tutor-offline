@@ -35,6 +35,7 @@ cd Early-math-tutor-offline
 - supports Kinyarwanda, English, French, and mixed response detection
 - supports tap response and microphone capture
 - loads a local Whisper Tiny ASR model when present
+- prefers a quantized CTranslate2 `faster-whisper` ASR export on CPU edge devices when present
 - loads a local LoRA feedback adapter when present
 - falls back to simple template feedback when the tiny language model output is weak
 - stores learner progress locally in SQLite
@@ -96,10 +97,16 @@ Install the advanced dependencies:
 pip install -r requirements-advanced.txt
 ```
 
-Download the small local models used by the advanced path:
+Download the small local models used by the advanced path and build the quantized ASR export:
 
 ```bash
 python scripts/setup_local_models.py
+```
+
+Convert an already-downloaded Whisper model to the int8 edge export manually:
+
+```bash
+python scripts/quantize_asr_model.py --source-model-dir models/asr --output-dir models/asr_quantized --quantization int8 --force
 ```
 
 Train the small LoRA feedback adapter:
@@ -111,7 +118,13 @@ python scripts/train_lora_language_head.py --base-model models/feedback_base --e
 This build currently uses:
 
 - `openai/whisper-tiny` for local ASR under `models/asr/`
+- a quantized CTranslate2 export under `models/asr_quantized/` for CPU edge inference
 - `sshleifer/tiny-gpt2` as the small text base model under `models/feedback_base/`
+
+Runtime note:
+
+- the app automatically prefers `models/asr_quantized/` through `faster-whisper` when that folder exists
+- because base Whisper does not expose a Kinyarwanda language token, the app uses automatic language detection for `kin` on the Whisper backends
 
 ## How to see results in HTML
 
@@ -160,6 +173,12 @@ Prepare child-speech augmented manifest:
 python scripts/adapt_child_asr.py
 ```
 
+Build the quantized ASR edge model:
+
+```bash
+python scripts/quantize_asr_model.py --force
+```
+
 ## Repo structure
 
 | Path | Purpose |
@@ -169,6 +188,7 @@ python scripts/adapt_child_asr.py
 | [parent_report.py](parent_report.py) | Weekly parent report generator |
 | [tutor/adaptive.py](tutor/adaptive.py) | Knowledge tracing and Elo baseline helpers |
 | [tutor/asr_adapt.py](tutor/asr_adapt.py) | Offline ASR and child-speech augmentation helpers |
+| [scripts/quantize_asr_model.py](scripts/quantize_asr_model.py) | Converts Whisper to a quantized CTranslate2 edge model |
 | [tutor/lora_language.py](tutor/lora_language.py) | LoRA feedback logic with quality gate |
 | [tutor/dashboard.py](tutor/dashboard.py) | Learner/system dashboard rendering and HTML export |
 | [tutor/storage.py](tutor/storage.py) | Local SQLite learner storage |
@@ -196,6 +216,7 @@ The repo ignores local heavy assets and working files:
 - `venv/`
 - `.cache/`
 - `models/asr/`
+- `models/asr_quantized/`
 - `models/feedback_base/`
 - `models/lora_numeracy_adapter/`
 - `data/local_store.sqlite`

@@ -43,13 +43,17 @@ DB_PATH = DATA_DIR / "local_store.sqlite"
 SCHEMA_PATH = DATA_DIR / "seed" / "parent_report_schema.json"
 KT_METRICS_PATH = OUTPUTS_DIR / "kt_metrics.json"
 ASR_MODEL_DIR = ROOT / "models" / "asr"
+ASR_QUANTIZED_MODEL_DIR = ROOT / "models" / "asr_quantized"
 LORA_ADAPTER_DIR = ROOT / "models" / "lora_numeracy_adapter"
 LORA_METADATA_PATH = LORA_ADAPTER_DIR / "adapter_metadata.json"
 CURRICULUM = load_curriculum(DATA_DIR)
 
 init_db(DB_PATH)
 
-asr_service = OfflineASRService(str(ASR_MODEL_DIR) if ASR_MODEL_DIR.exists() else None)
+asr_service = OfflineASRService(
+    str(ASR_MODEL_DIR) if ASR_MODEL_DIR.exists() else None,
+    quantized_model_path=str(ASR_QUANTIZED_MODEL_DIR) if ASR_QUANTIZED_MODEL_DIR.exists() else None,
+)
 if LORA_METADATA_PATH.exists():
     metadata = json.loads(LORA_METADATA_PATH.read_text(encoding="utf-8"))
     lora_service = LoRALanguageHead(
@@ -164,11 +168,15 @@ def deployment_card() -> str:
 
 
 def build_model_status() -> dict:
-    asr_state = asr_status_snapshot(str(ASR_MODEL_DIR) if ASR_MODEL_DIR.exists() else None)
+    asr_state = asr_status_snapshot(
+        str(ASR_MODEL_DIR) if ASR_MODEL_DIR.exists() else None,
+        quantized_model_path=str(ASR_QUANTIZED_MODEL_DIR) if ASR_QUANTIZED_MODEL_DIR.exists() else None,
+        load_model=False,
+    )
     lora_state = lora_service.status()
     return {
         "asr": asr_state["message"],
-        "adaptation": "Pitch, tempo, and classroom-noise augmentation is implemented in scripts/adapt_child_asr.py.",
+        "adaptation": "Child-speech augmentation is implemented in scripts/adapt_child_asr.py, and the ASR edge path now supports quantized CTranslate2 export for CPU devices.",
         "lora": lora_state["message"],
         "offline": "Tutor runtime uses only local curriculum, local storage, and optional local model folders.",
     }

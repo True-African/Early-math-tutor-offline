@@ -5,3 +5,5 @@ datasets>=3.0
 accelerate>=0.34
 soundfile>=0.12
 huggingface_hub>=0.34
+ctranslate2>=4.4,<5.0
+faster-whisper>=1.1,<2.0

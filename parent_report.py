@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from tutor.report_logic import build_weekly_report, render_parent_report_html
+from tutor.report_logic import build_weekly_report, render_parent_report_page
 from tutor.storage import list_learners
 
 DB_PATH = ROOT / "data" / "local_store.sqlite"
@@ -22,8 +22,8 @@ def main() -> None:
         print("No learners found yet. Run demo.py and answer at least one item first.")
         return
     learner_id, learner_name = learners[0]
-    report = build_weekly_report(DB_PATH, learner_id, SCHEMA_PATH)
-    html = render_parent_report_html(report)
+    report = build_weekly_report(DB_PATH, learner_id, SCHEMA_PATH, ROOT / "outputs")
+    html = render_parent_report_page(report)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(html, encoding="utf-8")
     print(f"Saved parent report for {learner_name} to {OUTPUT_PATH}")

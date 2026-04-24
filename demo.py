@@ -33,9 +33,9 @@ from tutor.storage import (
     save_mastery,
 )
 from tutor.visual_tasks import render_visual_html
+from tutor.voice import build_child_greeting, build_silence_support, voice_button_html
 
 
-# Project paths are defined once here so the rest of the file reads like app logic.
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 OUTPUTS_DIR = ROOT / "outputs"
@@ -47,10 +47,8 @@ LORA_ADAPTER_DIR = ROOT / "models" / "lora_numeracy_adapter"
 LORA_METADATA_PATH = LORA_ADAPTER_DIR / "adapter_metadata.json"
 CURRICULUM = load_curriculum(DATA_DIR)
 
-# The learner database is created on first run.
 init_db(DB_PATH)
 
-# If local models have already been prepared, the app picks them up automatically.
 asr_service = OfflineASRService(str(ASR_MODEL_DIR) if ASR_MODEL_DIR.exists() else None)
 if LORA_METADATA_PATH.exists():
     metadata = json.loads(LORA_METADATA_PATH.read_text(encoding="utf-8"))
@@ -96,7 +94,6 @@ def choice_update(options: list[str], highlighted: bool = False):
 def prompt_card(item: dict, preferred_language: str) -> str:
     reply_language = choose_reply_language(preferred_language, preferred_language)
     prompt = localized_stem(item, reply_language)
-    answer = item["answer_int"]
     skill = item["skill"].replace("_", " ").title()
     difficulty = item.get("difficulty", 1)
     return f"""
@@ -104,7 +101,7 @@ def prompt_card(item: dict, preferred_language: str) -> str:
       <div class="eyebrow">Current skill: {skill} - Difficulty {difficulty}</div>
       <div class="prompt-text">{prompt}</div>
       {render_visual_html(item)}
-      <div class="hint-line">Tap an answer, type a number word, or use the microphone. Correct answer stored for evaluation: {answer}.</div>
+      <div class="hint-line">Listen, count, and tap the matching answer button. You can also say the answer with the microphone.</div>
     </div>
     """
 
@@ -124,14 +121,30 @@ def feedback_card(message: str, positive: bool = True, title: str = "Tutor feedb
 
 def scenario_card() -> str:
     return """
-    <div class="panel-card">
+    <div class="panel-card opening-panel">
       <h3>First 90 seconds</h3>
-      <ol>
-        <li>The child hears a warm greeting in Kinyarwanda first.</li>
-        <li>The screen shows one clear visual counting task with four large answer buttons.</li>
-        <li>If the child stays silent for 10 seconds, the tutor repeats the prompt slowly and highlights the tap buttons.</li>
-        <li>The tutor rewards correct answers immediately with short praise and simple next-step guidance.</li>
-      </ol>
+      <div class="journey-grid">
+        <div class="journey-step">
+          <div class="journey-icon">1</div>
+          <div class="journey-title">Hear</div>
+          <div class="journey-copy">Warm Kinyarwanda greeting first.</div>
+        </div>
+        <div class="journey-step">
+          <div class="journey-icon">2</div>
+          <div class="journey-title">Count</div>
+          <div class="journey-copy">One clear counting picture and four big buttons.</div>
+        </div>
+        <div class="journey-step">
+          <div class="journey-icon">3</div>
+          <div class="journey-title">Repeat</div>
+          <div class="journey-copy">If silent for 10 seconds, the tutor repeats slowly and highlights the taps.</div>
+        </div>
+        <div class="journey-step">
+          <div class="journey-icon">4</div>
+          <div class="journey-title">Praise</div>
+          <div class="journey-copy">Correct answers get instant praise and the next step.</div>
+        </div>
+      </div>
     </div>
     """
 
@@ -166,7 +179,7 @@ def refresh_system_dashboard() -> str:
 
 
 def learner_panels(learner_id: str, learner_name: str) -> tuple[str, str]:
-    report = build_weekly_report(DB_PATH, learner_id, SCHEMA_PATH)
+    report = build_weekly_report(DB_PATH, learner_id, SCHEMA_PATH, OUTPUTS_DIR)
     summary = learner_attempt_summary(DB_PATH, learner_id)
     attempts = recent_attempts(DB_PATH, learner_id, limit=12)
     return render_parent_report_html(report), learner_dashboard_html(learner_name, summary, attempts)
@@ -178,22 +191,17 @@ def export_views(learner_name: str, report_html: str, learner_html: str, system_
 
 
 def choose_opening_item(curriculum: list[dict]) -> dict:
-    # The very first task is intentionally simple: count visible goats with large tap answers.
     goat_items = [
         item
         for item in curriculum
         if item.get("skill") == "counting"
-        and (
-            "goat" in item.get("stem_en", "").lower()
-            or "goat" in item.get("visual", "").lower()
-        )
+        and ("goat" in item.get("stem_en", "").lower() or "goat" in item.get("visual", "").lower())
     ]
     candidates = goat_items or [item for item in curriculum if item.get("skill") == "counting"] or curriculum
     candidates.sort(key=lambda item: (int(item.get("difficulty", 1)), item.get("id", "")))
     return candidates[0]
 
 
-# This state object travels between button clicks so the tutor can continue the same learner session.
 def make_state(
     learner_id: str,
     learner_name: str,
@@ -237,47 +245,93 @@ def answer_label(raw_response: str, parsed: int | None) -> str:
 
 
 def opening_sequence_card(state: dict | None) -> str:
-    # This panel makes the first-run child experience explicit for judges and reviewers.
     if not state or not state.get("current_item"):
         return """
         <div class="panel-card">
           <h3>Judge quick guide</h3>
           <ul>
             <li>Start a learner to open the child view.</li>
-            <li>The first-time flow is designed for a 6-year-old who speaks Kinyarwanda at home and is moving into English at school.</li>
+            <li>The first-time flow now plays a spoken Kinyarwanda greeting instead of showing text only.</li>
             <li>After one answer, review the caregiver report, learner progress, model notes, and HTML snapshot tabs.</li>
           </ul>
         </div>
         """
 
-    learner_name = html.escape(state.get("learner_name", "Learner"))
+    raw_learner_name = state.get("learner_name", "Learner")
+    learner_name = html.escape(raw_learner_name)
     item = state["current_item"]
-    question_en = html.escape(item.get("stem_en", ""))
-    question_kin = html.escape(item.get("stem_kin", item.get("stem_en", "")))
+    raw_question_en = item.get("stem_en", "")
+    raw_question_kin = item.get("stem_kin", item.get("stem_en", ""))
+    question_en = html.escape(raw_question_en)
+    question_kin = html.escape(raw_question_kin)
 
     if state.get("first_run") and state.get("awaiting_first_answer"):
         if state.get("silence_prompt_shown"):
+            silence_voice = voice_button_html(
+                build_silence_support(raw_learner_name, raw_question_kin, raw_question_en),
+                "rw-RW",
+                "Replay slow prompt",
+                autoplay=True,
+                detail="This replay happens automatically after 10 seconds of silence and points the child back to the tap buttons.",
+            )
             return f"""
             <div class="panel-card opening-panel">
-              <div class="eyebrow">First 90 Seconds - silence support triggered</div>
-              <h3>What the child hears after 10 seconds of silence</h3>
-              <p><b>Kinyarwanda repeat:</b> “Nta kibazo, {learner_name}. Reka nongere mbivuge gahoro. {question_kin}”</p>
-              <p><b>English bridge:</b> “That is okay. Let’s try together. {question_en} Tap the matching number.”</p>
-              <p><b>What changes on screen:</b> the answer buttons become the main focus and the tutor nudges the child to tap instead of speak.</p>
+              <div class="eyebrow">First 90 Seconds - silence support</div>
+              <h3>The tutor repeats the prompt slowly and guides a tap response</h3>
+              <div class="journey-grid compact-grid">
+                <div class="journey-step">
+                  <div class="journey-icon">RW</div>
+                  <div class="journey-title">Repeat</div>
+                  <div class="journey-copy">{question_kin}</div>
+                </div>
+                <div class="journey-step">
+                  <div class="journey-icon">EN</div>
+                  <div class="journey-title">Bridge</div>
+                  <div class="journey-copy">{question_en}</div>
+                </div>
+                <div class="journey-step">
+                  <div class="journey-icon">TAP</div>
+                  <div class="journey-title">Action</div>
+                  <div class="journey-copy">The large answer buttons become the easiest next move.</div>
+                </div>
+              </div>
+              {silence_voice}
             </div>
             """
+
+        welcome_voice = voice_button_html(
+            build_child_greeting(raw_learner_name, raw_question_kin, raw_question_en),
+            "rw-RW",
+            "Replay welcome audio",
+            autoplay=True,
+            detail="The greeting auto-plays when a new learner starts in Hugging Face or the browser app.",
+        )
         return f"""
         <div class="panel-card opening-panel">
           <div class="eyebrow">First 90 Seconds - first time learner</div>
-          <h3>Designed for a 6-year-old who speaks Kinyarwanda at home and is transitioning to English at school</h3>
-          <p><b>What the child hears first:</b> “Muraho {learner_name}. Reka tubare hamwe.”</p>
-          <p><b>English bridge:</b> “Hello {learner_name}. Let’s count together.”</p>
-          <p><b>Very first task:</b> a simple goat-counting activity with four large tap answers.</p>
-          <p><b>Current Kinyarwanda prompt:</b> {question_kin}</p>
-          <p><b>Current English prompt:</b> {question_en}</p>
-          <p><b>If the child stays silent for 10 seconds:</b> the tutor repeats the prompt slowly in Kinyarwanda first, adds a short English bridge, and points the child to the large tap buttons.</p>
+          <h3>The opening experience is now voice-first, simple, and child-sized</h3>
+          <div class="journey-grid compact-grid">
+            <div class="journey-step">
+              <div class="journey-icon">RW</div>
+              <div class="journey-title">Welcome</div>
+              <div class="journey-copy">Muraho {learner_name}. The child hears Kinyarwanda first.</div>
+            </div>
+            <div class="journey-step">
+              <div class="journey-icon">123</div>
+              <div class="journey-title">Task</div>
+              <div class="journey-copy">A simple goat-counting activity opens with four large tap answers.</div>
+            </div>
+            <div class="journey-step">
+              <div class="journey-icon">10s</div>
+              <div class="journey-title">Support</div>
+              <div class="journey-copy">If the child stays silent, the tutor repeats slowly and highlights the taps.</div>
+            </div>
+          </div>
+          <div class="voice-inline-note">Current prompt in Kinyarwanda: {question_kin}</div>
+          {welcome_voice}
         </div>
         """
+
     if state.get("first_run_complete"):
         return """
         <div class="panel-card opening-panel">
@@ -287,13 +341,14 @@ def opening_sequence_card(state: dict | None) -> str:
           <p>The app is now continuing with normal adaptive practice based on the learner's answers.</p>
         </div>
         """
+
     return """
     <div class="panel-card opening-panel">
       <div class="eyebrow">Hosted demo guide</div>
       <h3>What judges should look for</h3>
       <ul>
         <li><b>Tutor Activity:</b> the child-facing task flow with tap-first interaction and optional microphone input.</li>
-        <li><b>Caregiver Report:</b> the weekly report in low-literacy language.</li>
+        <li><b>Caregiver Report:</b> the weekly report in low-literacy language with voice replay and QR support.</li>
         <li><b>Learner Progress:</b> stored attempts, skill trend, and language mix.</li>
         <li><b>Model & Offline Notes:</b> offline constraints, ASR, LoRA, and deployment notes.</li>
         <li><b>Download HTML Snapshot:</b> one standalone HTML dashboard for quick review outside the app.</li>
@@ -303,7 +358,6 @@ def opening_sequence_card(state: dict | None) -> str:
 
 
 def start_session(learner_name: str, learner_choice: str, preferred_language: str):
-    # Start a new learner or switch to an existing learner, then refresh the app and HTML dashboard.
     preferred_language = (preferred_language or "kin").lower()
     existing_id, existing_name = parse_learner_choice(learner_choice)
     if existing_id:
@@ -355,7 +409,6 @@ def start_session(learner_name: str, learner_choice: str, preferred_language: st
 
 
 def handle_silence_timeout(state: dict):
-    # On the very first task, if the child is silent for 10 seconds, repeat the prompt and steer them to tap answers.
     if not state or not state.get("awaiting_first_answer") or state.get("silence_prompt_shown") or not state.get("current_item"):
         return gr.skip(), gr.skip(), gr.skip(), gr.update(active=False), state
     state["silence_prompt_shown"] = True
@@ -383,22 +436,23 @@ def transcribe_microphone(audio_blob, state: dict):
 
 
 def submit_answer(choice: str, typed_answer: str, state: dict):
-    # Score the answer, update the learner model, and rewrite the standalone HTML dashboard.
     if not state or not state.get("current_item"):
         return (
-            "",
-            "",
-            gr.update(),
+            session_banner("No learner yet", "kin"),
+            opening_sequence_card(None),
+            scenario_card(),
+            gr.update(choices=[], value=None),
             "",
             feedback_card("Start a learner session first.", positive=False, title="Action needed"),
-            "",
-            "",
+            "<p style='color:#60707d'>The weekly parent report preview appears here after a learner starts answering items.</p>",
+            "<p style='color:#60707d'>Learner progress dashboard appears here after attempts are saved.</p>",
             refresh_system_dashboard(),
-            "",
+            "<p style='color:#60707d'>Start a learner session to generate one standalone HTML dashboard in the outputs folder.</p>",
             None,
             "ASR status will appear here.",
+            gr.update(value=10, active=False),
             state,
-            gr.update(),
+            gr.update(choices=learner_choices()),
         )
 
     item = state["current_item"]
@@ -468,10 +522,22 @@ body, .gradio-container {background:#f4f7f8 !important; font-family:Arial,Helvet
 .banner-card {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;background:#0f3d45;color:#f7fbfc;padding:14px 16px;border-radius:16px}
 .panel-card {background:#ffffff;border:1px solid #dce5ea;border-radius:14px;padding:16px}
 .opening-panel {margin-bottom:14px;background:#fff8ec;border-color:#f7c37a}
+.journey-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.compact-grid {grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:14px}
+.journey-step {background:#ffffff;border:1px solid #f1dfc3;border-radius:18px;padding:14px}
+.journey-icon {width:44px;height:44px;border-radius:14px;background:#ef6c2f;color:#ffffff;font-weight:800;display:grid;place-items:center;margin-bottom:10px}
+.journey-title {font-size:18px;font-weight:700;color:#17212b;margin-bottom:6px}
+.journey-copy {color:#60707d;line-height:1.45}
+.voice-box {background:#ffffff;border:1px solid #f1dfc3;border-radius:18px;padding:14px}
+.voice-btn {border:0;border-radius:999px;background:#ef6c2f;color:#ffffff;padding:12px 16px;font-size:16px;font-weight:800;cursor:pointer}
+.voice-detail {margin-top:8px;color:#60707d;line-height:1.45}
+.voice-inline-note {margin-bottom:12px;color:#4f5f6b}
+#answer-buttons label {min-height:72px !important;border-radius:18px !important;border:2px solid #dce5ea !important;background:#fff !important;font-size:24px !important;font-weight:800 !important;display:flex !important;align-items:center !important;justify-content:center !important}
+#answer-buttons label:has(input:checked) {border-color:#ef6c2f !important;background:#fff4ea !important}
+@media (max-width: 900px) {.banner-card,.journey-grid,.compact-grid {grid-template-columns:1fr}}
 """
 
 
-# Build the child-facing app with clear tabs for tutoring, reporting, and the single exported HTML dashboard.
 with gr.Blocks(title="Early Math Tutor Offline") as demo:
     app_state = gr.State({})
     gr.Markdown(
@@ -498,7 +564,7 @@ with gr.Blocks(title="Early Math Tutor Offline") as demo:
             with gr.Row():
                 with gr.Column(scale=7):
                     prompt_html = gr.HTML(scenario_card())
-                    choice = gr.Radio(label="Tap an answer", choices=[])
+                    choice = gr.Radio(label="Tap an answer", choices=[], elem_id="answer-buttons")
                     typed_answer = gr.Textbox(label="Typed or spoken-word answer", placeholder="e.g. five, cinq, esheshatu, 6")
                     with gr.Row():
                         submit_btn = gr.Button("Submit answer", variant="primary")
@@ -536,7 +602,7 @@ with gr.Blocks(title="Early Math Tutor Offline") as demo:
             )
             export_file = gr.File(label="Generated HTML dashboard", file_count="single")
 
-    silence_timer = gr.Timer(value=10, active=False, render=False)
+    silence_timer = gr.Timer(value=10, active=False)
 
     start_btn.click(
         start_session,

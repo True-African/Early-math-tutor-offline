@@ -1,0 +1,7 @@
+torch>=2.3
+transformers>=4.45
+peft>=0.13
+datasets>=3.0
+accelerate>=0.34
+soundfile>=0.12
+huggingface_hub>=0.34

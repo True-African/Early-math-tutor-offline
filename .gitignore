@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.gradio/
+.cache/
+data/local_store.sqlite
+models/asr/
+models/feedback_base/
+models/lora_numeracy_adapter/
+!models/README.md

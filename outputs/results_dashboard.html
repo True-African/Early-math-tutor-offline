@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="4">
+  <title>Tutor Results Dashboard</title>
+  <style>
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f7f8; color: #17212b; }
+    .page { max-width: 1180px; margin: 0 auto; padding: 24px 18px 40px; }
+    .page-head { background: #0f3d45; color: #f7fbfc; border-radius: 18px; padding: 20px 22px; margin-bottom: 18px; }
+    .page-head h1 { margin: 0 0 6px; font-size: 30px; }
+    .page-head p { margin: 0; color: #d6e7ea; }
+    .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .pill { background:#ffffff;border:1px solid #dce5ea;padding:10px 14px;border-radius:999px; }
+    .card { background: #ffffff; border: 1px solid #dce5ea; border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+    .meta { color: #60707d; font-size: 13px; margin-top: 6px; }
+    details summary { cursor: pointer; font-size: 22px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="page-head">
+      <h1>Tutor Results Dashboard</h1>
+      <p>One standalone HTML file with the latest parent report, learner dashboard, and system dashboard.</p>
+    </div>
+    
+    <div class="nav">
+      <span class="pill">Learner: Akeza</span>
+      <span class="pill">This file refreshes after each session start or answer.</span>
+      <span class="pill">Browser auto-refresh: 4 seconds</span>
+    </div>
+    <div class="card">
+      <h2 style="margin-top:0">How to use this HTML dashboard</h2>
+      <p class="meta">Run <code>python demo.py</code>, start a learner session, and submit at least one answer. This standalone file is then refreshed with the newest learner, parent, and system results.</p>
+    </div>
+    <details class="card" open>
+      <summary>Parent report</summary>
+      <div class="meta">A simple caregiver summary for the active learner.</div>
+      
+    <html>
+    <body style="font-family:Arial,Helvetica,sans-serif;background:#f7fafb;padding:24px">
+      <div style="max-width:780px;margin:0 auto;background:#fff;border:1px solid #d9e2e8;border-radius:14px;padding:20px">
+        <h1 style="margin-top:0">Weekly Parent Report</h1>
+        <p><b>Learner:</b> Akeza<br>
+        <b>Week starting:</b> 2026-04-20<br>
+        <b>Sessions:</b> 18</p>
+        <p>This report uses simple arrows and bars so a parent can understand progress quickly.</p>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr><th style="text-align:left">Skill</th><th>Trend</th><th style="text-align:left">Progress</th><th>Level</th></tr></thead>
+          <tbody><tr><td>Counting</td><td>⬆</td><td><div style='height:10px;background:#d9e2e8;border-radius:999px;overflow:hidden'><div style='width:98%;height:10px;background:#2a9d8f'></div></div></td><td>98%</td></tr><tr><td>Number Sense</td><td>⬆</td><td><div style='height:10px;background:#d9e2e8;border-radius:999px;overflow:hidden'><div style='width:98%;height:10px;background:#2a9d8f'></div></div></td><td>98%</td></tr><tr><td>Addition</td><td>⬆</td><td><div style='height:10px;background:#d9e2e8;border-radius:999px;overflow:hidden'><div style='width:93%;height:10px;background:#2a9d8f'></div></div></td><td>93%</td></tr><tr><td>Subtraction</td><td>⬆</td><td><div style='height:10px;background:#d9e2e8;border-radius:999px;overflow:hidden'><div style='width:93%;height:10px;background:#2a9d8f'></div></div></td><td>93%</td></tr><tr><td>Word Problem</td><td>⬆</td><td><div style='height:10px;background:#d9e2e8;border-radius:999px;overflow:hidden'><div style='width:93%;height:10px;background:#2a9d8f'></div></div></td><td>93%</td></tr></tbody>
+        </table>
+        <p style="margin-top:16px"><b>Simple summary:</b> Keep practicing the weakest skill first, and praise the child after every correct answer.</p>
+      </div>
+    </body>
+    </html>
+    
+    </details>
+    <details class="card" open>
+      <summary>Learner dashboard</summary>
+      <div class="meta">Attempts, progress by skill, and language mix for the active learner.</div>
+      
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#f7fafb;padding:14px">
+      <div style="background:#fff;border:1px solid #dce5ea;border-radius:14px;padding:18px">
+        <h2 style="margin-top:0">Learner dashboard: Akeza</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <div style="border:1px solid #dce5ea;border-left:5px solid #006d77;border-radius:10px;padding:10px"><div style="color:#60707d">Attempts</div><b style="font-size:22px">18</b></div>
+          <div style="border:1px solid #dce5ea;border-left:5px solid #2a9d8f;border-radius:10px;padding:10px"><div style="color:#60707d">Correct</div><b style="font-size:22px">15</b></div>
+          <div style="border:1px solid #dce5ea;border-left:5px solid #f4a261;border-radius:10px;padding:10px"><div style="color:#60707d">Accuracy</div><b style="font-size:22px">83%</b></div>
+        </div>
+        <h3>Skill progress</h3>
+        <table style='width:100%;border-collapse:collapse'><thead><tr><th style='text-align:left'>Skill</th><th style='text-align:left'>Progress</th><th>Accuracy</th><th>Attempts</th></tr></thead><tbody><tr><td>Addition</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>2</td></tr><tr><td>Counting</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:66%;height:12px;background:#2a9d8f'></div></div></td><td>66%</td><td>9</td></tr><tr><td>Number Sense</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>3</td></tr><tr><td>Subtraction</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>2</td></tr><tr><td>Word Problem</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>2</td></tr></tbody></table>
+        <h3>Language mix</h3>
+        <span style='display:inline-block;padding:6px 10px;border-radius:999px;background:#edf5f6;color:#124f57;margin:0 6px 6px 0'>kin: 9</span><span style='display:inline-block;padding:6px 10px;border-radius:999px;background:#edf5f6;color:#124f57;margin:0 6px 6px 0'>fr: 9</span>
+        <h3>Recent attempts</h3>
+        <div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Number Sense</b> - N002<br>Answer: 48 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:43.058279+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX005<br>Answer: 6 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:43.048523+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX004<br>Answer: 5 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.038809+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX007<br>Answer: 8 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.029311+00:00</span></div><div style='border-left:4px solid #d95f5f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX010<br>Answer: 1 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.020270+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX006<br>Answer: 7 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.010649+00:00</span></div><div style='border-left:4px solid #d95f5f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX009<br>Answer: 0 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:43.001049+00:00</span></div><div style='border-left:4px solid #d95f5f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX008<br>Answer: 8 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:42.991131+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Word Problem</b> - WX008<br>Answer: 11 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:42.981372+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Subtraction</b> - SX008<br>Answer: 10 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:42.972322+00:00</span></div>
+      </div>
+    </div>
+    
+    </details>
+    <details class="card" open>
+      <summary>System dashboard</summary>
+      <div class="meta">Tutor-wide metrics, model readiness, and recent activity.</div>
+      
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#f4f7f8;padding:14px">
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px">
+        <div style="background:#fff;border:1px solid #dce5ea;border-left:5px solid #006d77;border-radius:10px;padding:10px"><div style="color:#60707d">Learners</div><b style="font-size:24px">1</b></div>
+        <div style="background:#fff;border:1px solid #dce5ea;border-left:5px solid #2a9d8f;border-radius:10px;padding:10px"><div style="color:#60707d">Attempts</div><b style="font-size:24px">18</b></div>
+        <div style="background:#fff;border:1px solid #dce5ea;border-left:5px solid #f4a261;border-radius:10px;padding:10px"><div style="color:#60707d">BKT AUC</div><b style="font-size:24px">0.6013</b></div>
+        <div style="background:#fff;border:1px solid #dce5ea;border-left:5px solid #457b9d;border-radius:10px;padding:10px"><div style="color:#60707d">Elo AUC</div><b style="font-size:24px">0.618</b></div>
+      </div>
+      <div style="background:#fff;border:1px solid #dce5ea;border-radius:14px;padding:18px;margin-bottom:12px">
+        <h2 style="margin-top:0">System dashboard</h2>
+        <p style="color:#60707d">Measured on synthetic held-out replay with 120 learners and 2880 answer events. BKT reached AUC 0.6013, compared with Elo baseline AUC 0.618.</p>
+        <h3>Skill accuracy</h3>
+        <table style='width:100%;border-collapse:collapse'><thead><tr><th style='text-align:left'>Skill</th><th style='text-align:left'>Progress</th><th>Accuracy</th><th>Attempts</th></tr></thead><tbody><tr><td>Addition</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>2</td></tr><tr><td>Counting</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:66%;height:12px;background:#2a9d8f'></div></div></td><td>66%</td><td>9</td></tr><tr><td>Number Sense</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>3</td></tr><tr><td>Subtraction</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>2</td></tr><tr><td>Word Problem</td><td><div style='height:12px;background:#dce5ea;border-radius:999px;overflow:hidden'><div style='width:100%;height:12px;background:#2a9d8f'></div></div></td><td>100%</td><td>2</td></tr></tbody></table>
+        <h3>Language mix</h3>
+        <span style='display:inline-block;padding:6px 10px;border-radius:999px;background:#edf5f6;color:#124f57;margin:0 6px 6px 0'>kin: 9</span><span style='display:inline-block;padding:6px 10px;border-radius:999px;background:#edf5f6;color:#124f57;margin:0 6px 6px 0'>fr: 9</span>
+        <h3>Recent activity</h3>
+        <div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Number Sense</b> - N002<br>Answer: 48 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:43.058279+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX005<br>Answer: 6 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:43.048523+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX004<br>Answer: 5 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.038809+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX007<br>Answer: 8 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.029311+00:00</span></div><div style='border-left:4px solid #d95f5f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX010<br>Answer: 1 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.020270+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX006<br>Answer: 7 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:43.010649+00:00</span></div><div style='border-left:4px solid #d95f5f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX009<br>Answer: 0 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:43.001049+00:00</span></div><div style='border-left:4px solid #d95f5f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Counting</b> - CX008<br>Answer: 8 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:42.991131+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Word Problem</b> - WX008<br>Answer: 11 - Language: kin<br><span style='color:#60707d'>2026-04-24T08:51:42.981372+00:00</span></div><div style='border-left:4px solid #2a9d8f;padding:8px 10px;background:#fff;margin:8px 0;border-radius:8px'><b>Subtraction</b> - SX008<br>Answer: 10 - Language: fr<br><span style='color:#60707d'>2026-04-24T08:51:42.972322+00:00</span></div>
+      </div>
+      <div style="background:#fff;border:1px solid #dce5ea;border-radius:14px;padding:18px">
+        <h2 style="margin-top:0">Model readiness</h2>
+        <table style="width:100%;border-collapse:collapse">
+          <tbody>
+            <tr><th style="text-align:left">ASR</th><td>Local ASR model loaded from D:\Research\Behavioral tracking algorithms\AIMS hackathon\AI_Math_Tutor_for_Early_Learners\early-math-tutor-offline\models\asr.</td></tr>
+            <tr><th style="text-align:left">Child-speech adaptation</th><td>Pitch, tempo, and classroom-noise augmentation is implemented in scripts/adapt_child_asr.py.</td></tr>
+            <tr><th style="text-align:left">LoRA language head</th><td>LoRA language head loaded from D:\Research\Behavioral tracking algorithms\AIMS hackathon\AI_Math_Tutor_for_Early_Learners\early-math-tutor-offline\models\lora_numeracy_adapter.</td></tr>
+            <tr><th style="text-align:left">Offline inference</th><td>Tutor runtime uses only local curriculum, local storage, and optional local model folders.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    </details>
+    
+  </div>
+</body>
+</html>

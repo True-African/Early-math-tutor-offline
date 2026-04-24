@@ -1,0 +1,8 @@
+{
+  "bkt_auc": 0.6013,
+  "elo_auc": 0.618,
+  "learners": 120,
+  "attempts_per_learner": 24,
+  "events": 2880,
+  "summary": "Measured on synthetic held-out replay with 120 learners and 2880 answer events. BKT reached AUC 0.6013, compared with Elo baseline AUC 0.618."
+}

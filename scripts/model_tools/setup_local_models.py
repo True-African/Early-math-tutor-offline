@@ -6,7 +6,7 @@ from pathlib import Path
 from huggingface_hub import snapshot_download
 
 try:
-    from scripts.models.quantize_asr_model import convert_asr_model
+    from scripts.model_tools.quantize_asr_model import convert_asr_model
 except Exception:  # pragma: no cover - optional dependency
     convert_asr_model = None
 

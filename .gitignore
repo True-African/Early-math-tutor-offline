@@ -10,3 +10,6 @@ models/asr_quantized/
 models/feedback_base/
 models/lora_numeracy_adapter/
 !models/README.md
+outputs/*
+!outputs/.gitkeep
+!outputs/README.md

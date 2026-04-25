@@ -28,6 +28,34 @@ git clone https://huggingface.co/spaces/Iyumva/Early-math-tutor-offline
 cd Early-math-tutor-offline
 ```
 
+## Repository layout
+
+The root is now kept intentionally small so a new reader can spot the runnable files quickly.
+
+- `app.py`: Hugging Face Space entrypoint
+- `demo.py`: local Gradio app entrypoint
+- `parent_report.py`: standalone parent-report generator
+- `tutor/`: main application package
+- `scripts/`: setup, evaluation, and model-prep utilities grouped by purpose
+- `data/`: seed files and generated curriculum
+- `assets/`: optional static assets for augmentation and local media workflows
+- `models/`: local model placeholders and setup notes only
+- `outputs/`: generated dashboards, reports, and evaluation artifacts
+- `docs/`: project notes, audit files, and supporting writeups
+
+If you only want to run the app, focus on `README.md`, `demo.py`, `app.py`, `tutor/`, and `scripts/`.
+
+Generated files are intentionally kept out of Git where possible so the repo stays easy to read.
+
+Inside `scripts/`, utilities are now grouped like this:
+
+- `scripts/models/`: local model download, quantization, and LoRA training
+- `scripts/eval/`: evaluation utilities
+- `scripts/data/`: curriculum and demo-data generation
+- `scripts/audio/`: child-speech augmentation
+
+Top-level script commands such as `python scripts/setup_local_models.py` still work through compatibility wrappers.
+
 ## What this project currently does
 
 - runs offline at inference time
@@ -98,6 +126,27 @@ Install the project:
 pip install -r requirements.txt
 ```
 
+Online entrypoint:
+
+```bash
+python app.py
+```
+
+What this means:
+
+- On Hugging Face Spaces, the platform reads the front matter at the top of `README.md`.
+- The line `app_file: app.py` tells Hugging Face which Python file to launch.
+- `app.py` is a tiny wrapper that imports the Gradio app from `demo.py` and exposes it as `app`.
+- In other words, the hosted Space starts from `app.py`, but the main app logic still lives in `demo.py`.
+
+If you want to run that same entrypoint locally, use:
+
+```bash
+python app.py
+```
+
+That launches the same Gradio app as `python demo.py`.
+
 ## Online test flow
 
 Use this path if you want to test the app in Hugging Face without running local models.
@@ -114,12 +163,6 @@ Use this path if you want to test the app in Hugging Face without running local 
 7. Open `Learner Progress` to see learner metrics online.
 8. Open `Model & Offline Notes` to see model readiness and system notes online.
 9. Open `Download HTML Snapshot` if you want the generated standalone results file from the hosted app.
-
-Online entrypoint:
-
-```bash
-app.py
-```
 
 ## Offline test flow
 
@@ -233,6 +276,8 @@ That writes:
 
 The parent-only script now uses the most recently active learner instead of always defaulting to the first seeded learner.
 
+The `outputs/` folder is generated-only. See [outputs/README.md](outputs/README.md) for what gets written there and how to regenerate it.
+
 ## Useful commands
 
 Generate the expanded curriculum:
@@ -278,6 +323,7 @@ python scripts/quantize_asr_model.py --force
 | [app.py](app.py) | Hugging Face and Gradio entrypoint |
 | [demo.py](demo.py) | Main tutor app |
 | [parent_report.py](parent_report.py) | Weekly parent report generator |
+| [assets/README.md](assets/README.md) | Notes on optional local static assets |
 | [tutor/adaptive.py](tutor/adaptive.py) | Knowledge tracing and Elo baseline helpers |
 | [tutor/asr_adapt.py](tutor/asr_adapt.py) | Offline ASR and child-speech augmentation helpers |
 | [scripts/quantize_asr_model.py](scripts/quantize_asr_model.py) | Converts Whisper to a quantized CTranslate2 edge model |
@@ -287,19 +333,31 @@ python scripts/quantize_asr_model.py --force
 | [scripts/setup_local_models.py](scripts/setup_local_models.py) | Downloads the small local ASR and text base models |
 | [scripts/train_lora_language_head.py](scripts/train_lora_language_head.py) | Trains the tiny LoRA adapter |
 | [scripts/run_kt_eval.py](scripts/run_kt_eval.py) | KT evaluation |
-| [BRIEF_AUDIT.md](BRIEF_AUDIT.md) | Requirement-by-requirement implementation audit |
+| [scripts/README.md](scripts/README.md) | Script grouping and compatibility notes |
+| [docs/BRIEF_AUDIT.md](docs/BRIEF_AUDIT.md) | Requirement-by-requirement implementation audit |
 
 ## Requirement audit
 
 A line-by-line audit of the brief is saved in:
 
-- [BRIEF_AUDIT.md](BRIEF_AUDIT.md)
+- [docs/BRIEF_AUDIT.md](docs/BRIEF_AUDIT.md)
 
 That file marks each requirement as:
 
 - implemented
 - partial
 - not yet implemented
+
+## Project notes
+
+Supporting project documents now live in:
+
+- [docs/README.md](docs/README.md)
+- [docs/PROJECT_INTERPRETATION.md](docs/PROJECT_INTERPRETATION.md)
+- [docs/process_log.md](docs/process_log.md)
+- [docs/footprint_report.md](docs/footprint_report.md)
+- [docs/SIGNED.md](docs/SIGNED.md)
+- [docs/analysis/kt_eval.ipynb](docs/analysis/kt_eval.ipynb)
 
 ## Notes on repo cleanliness
 

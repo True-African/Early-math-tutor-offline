@@ -1,6 +1,8 @@
 # Local Models
 
-Place optional local models here if you activate the advanced paths:
+This folder should stay lightweight in Git.
+
+Place optional local models here only when you activate the advanced paths locally:
 
 - `models/asr/` for a local offline ASR checkpoint such as `openai/whisper-tiny`
 - `models/feedback_base/` for the small text base model used during LoRA training
@@ -9,3 +11,5 @@ Place optional local models here if you activate the advanced paths:
 The baseline demo runs without these folders populated. If they are added later, the app will try to use them automatically.
 
 The helper script `scripts/setup_local_models.py` downloads the default local models into these folders.
+
+Downloaded model contents in this folder are intentionally ignored by Git.

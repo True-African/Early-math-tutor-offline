@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from tutor.language import localized_stem
+
 
 try:
     import torch  # type: ignore
@@ -45,6 +47,40 @@ def _low_quality_generation(text: str) -> bool:
         return True
     most_common = max(words.count(word) for word in unique_words)
     return (most_common / max(len(words), 1)) > 0.45
+
+
+def _looks_wrong_language(text: str, language: str) -> bool:
+    language = (language or "en").lower()
+    words = [word.strip(".,!?;:").lower().replace("'", "") for word in text.split() if word.strip()]
+    if not words:
+        return True
+    english_markers = {"the", "answer", "great", "good", "job", "correct", "try", "was", "is"}
+    french_markers = {"la", "le", "les", "bonne", "reponse", "bravo", "tres", "bien", "cest", "cette", "fois"}
+    kin_markers = {"ni", "byiza", "igisubizo", "cyiza", "wagerageje", "ongera", "neza", "buhoro", "kandi"}
+    word_set = set(words)
+    if language == "fr":
+        return bool(word_set & english_markers) and not bool(word_set & french_markers)
+    if language == "kin":
+        return bool(word_set & english_markers) and not bool(word_set & kin_markers)
+    return False
+
+
+def _generation_guidance(language: str) -> tuple[str, str]:
+    language = (language or "en").lower()
+    if language == "fr":
+        return (
+            "French",
+            "Use two short child-friendly French sentences. Example: 'Tres bien. La bonne reponse est 5.'",
+        )
+    if language == "kin":
+        return (
+            "Kinyarwanda",
+            "Koresha interuro ebyiri ngufi kandi zoroshye mu Kinyarwanda. Urugero: 'Ni byiza cyane. Igisubizo cyiza ni 5.'",
+        )
+    return (
+        "English",
+        "Use two short child-friendly English sentences. Example: 'Great job. The correct answer is 5.'",
+    )
 
 
 class LoRALanguageHead:
@@ -96,29 +132,32 @@ class LoRALanguageHead:
         # This fallback keeps the app stable even when the tiny local language model is weak.
         if language == "fr":
             return (
-                f"Bravo. La réponse était {item['answer_int']}."
+                f"Très bien. La bonne réponse est {item['answer_int']}."
                 if correct
-                else f"Bon effort. La bonne réponse était {item['answer_int']}."
+                else f"Bon essai. La bonne réponse est {item['answer_int']}."
             )
         if language == "kin":
             return (
-                f"Ni byiza. Igisubizo ni {item['answer_int']}."
+                f"Ni byiza cyane. Igisubizo cyiza ni {item['answer_int']}."
                 if correct
-                else f"Wagerageje neza. Igisubizo nyacyo ni {item['answer_int']}."
+                else f"Wagerageje neza. Igisubizo cyiza ni {item['answer_int']}."
             )
         return (
-            f"Great job. The answer was {item['answer_int']}."
+            f"Great job. The correct answer is {item['answer_int']}."
             if correct
-            else f"Good try. The correct answer was {item['answer_int']}."
+            else f"Good try. The correct answer is {item['answer_int']}."
         )
 
     def generate_feedback(self, item: dict, correct: bool, language: str = "en") -> dict:
         if self.load():
+            language_name, guidance = _generation_guidance(language)
+            prompt_stem = localized_stem(item, language) or item.get("stem_en", "")
             prompt = (
                 f"You are a warm early-math tutor. Skill: {item['skill']}. "
-                f"Question: {item.get('stem_en', '')}. Correct answer: {item['answer_int']}. "
+                f"Question: {prompt_stem}. Correct answer: {item['answer_int']}. "
                 f"The child was {'correct' if correct else 'incorrect'}. "
-                f"Reply in {language} using one short praise sentence and one short teaching sentence."
+                f"Reply only in {language_name}. {guidance} "
+                "Keep the tone warm, simple, and natural."
             )
             try:
                 inputs = self.tokenizer(prompt, return_tensors="pt")
@@ -132,7 +171,7 @@ class LoRALanguageHead:
                     )
                 generated = output[0][prompt_length:]
                 text = self.tokenizer.decode(generated, skip_special_tokens=True).strip()
-                if not text or _low_quality_generation(text):
+                if not text or _low_quality_generation(text) or _looks_wrong_language(text, language):
                     return {
                         "mode": "template",
                         "text": self.template_feedback(item, correct, language),

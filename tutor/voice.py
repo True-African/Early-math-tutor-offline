@@ -21,6 +21,24 @@ SKILL_LABELS = {
     "word_problem": "Word Problem",
 }
 
+SKILL_LABELS_LOCALIZED = {
+    "en": SKILL_LABELS,
+    "kin": {
+        "counting": "Kubara",
+        "number_sense": "Gusobanukirwa imibare",
+        "addition": "Guteranya",
+        "subtraction": "Gukuramo",
+        "word_problem": "Ibibazo by'amagambo",
+    },
+    "fr": {
+        "counting": "Comptage",
+        "number_sense": "Sens du nombre",
+        "addition": "Addition",
+        "subtraction": "Soustraction",
+        "word_problem": "Probleme verbal",
+    },
+}
+
 SKILL_KINYARWANDA = {
     "counting": "kubara",
     "number_sense": "gusobanukirwa imibare",
@@ -44,15 +62,17 @@ def voice_language_tag(preferred_language: str) -> str:
     return LANGUAGE_TAGS.get((preferred_language or "kin").lower(), "en-US")
 
 
-def skill_label(skill: str) -> str:
-    return SKILL_LABELS.get(skill, skill.replace("_", " ").title())
+def skill_label(skill: str, language: str = "en") -> str:
+    language = (language or "en").lower()
+    table = SKILL_LABELS_LOCALIZED.get(language, SKILL_LABELS_LOCALIZED["en"])
+    return table.get(skill, skill.replace("_", " ").title())
 
 
 def skill_symbol(skill: str) -> str:
     return SKILL_SYMBOLS.get(skill, "*")
 
 
-def _speak_js(message: str, language_tag: str, rate: float = 0.9, pitch: float = 1.08) -> str:
+def _speak_js(message: str, language_tag: str, rate: float = 0.84, pitch: float = 1.0) -> str:
     payload = json.dumps(message)
     lang = json.dumps(language_tag)
     return (
@@ -112,17 +132,45 @@ def voice_button_html(
     """
 
 
-def build_child_greeting(learner_name: str, question_kin: str, question_en: str) -> str:
+def build_child_greeting(learner_name: str, question_text: str, preferred_language: str = "kin") -> str:
+    language = (preferred_language or "kin").lower()
+    if language == "fr":
+        return (
+            f"Bonjour {learner_name}. On commence doucement. "
+            f"Ecoute bien. {question_text}. "
+            "Ensuite, touche la bonne reponse."
+        )
+    if language == "en":
+        return (
+            f"Hello {learner_name}. Let us begin slowly. "
+            f"Listen carefully. {question_text}. "
+            "Then tap the correct answer."
+        )
     return (
-        f"Muraho {learner_name}. Reka tubare hamwe. {question_kin}. "
-        f"Hello {learner_name}. Let's count together. {question_en}. Tap the matching number."
+        f"Muraho {learner_name}. Tugiye gutangira buhoro. "
+        f"Tegera neza. {question_text}. "
+        "Hanyuma ukande igisubizo gikwiye."
     )
 
 
-def build_silence_support(learner_name: str, question_kin: str, question_en: str) -> str:
+def build_silence_support(learner_name: str, question_text: str, preferred_language: str = "kin") -> str:
+    language = (preferred_language or "kin").lower()
+    if language == "fr":
+        return (
+            f"Ce n'est pas grave, {learner_name}. On reprend doucement. "
+            f"{question_text}. "
+            "Ensuite, touche la bonne reponse."
+        )
+    if language == "en":
+        return (
+            f"That is okay, {learner_name}. Let us try again slowly. "
+            f"{question_text}. "
+            "Then tap the correct answer."
+        )
     return (
-        f"Nta kibazo {learner_name}. Reka nongere mbivuge gahoro. {question_kin}. "
-        f"That is okay. Let's try together. {question_en}. Tap the matching number."
+        f"Nta kibazo {learner_name}. Reka nongere mbivuge buhoro. "
+        f"{question_text}. "
+        "Hanyuma ukande igisubizo gikwiye."
     )
 
 
@@ -163,12 +211,27 @@ def public_file_url(path: Path, app_root: Path) -> str:
     return f"{base}{gradio_file_route(path, app_root)}"
 
 
-def qr_image_html(url: str, label: str) -> str:
+def qr_image_html(url: str, label: str, language: str = "en") -> str:
+    fallback_title = {
+        "en": "Phone replay",
+        "kin": "Gusubiramo kuri telefoni",
+        "fr": "Lecture sur telephone",
+    }.get((language or "en").lower(), "Phone replay")
+    fallback_copy = {
+        "en": "QR appears automatically in the Hugging Face Space.",
+        "kin": "QR yigaragaza ubwayo muri Hugging Face Space.",
+        "fr": "Le QR apparait automatiquement dans le Space Hugging Face.",
+    }.get((language or "en").lower(), "QR appears automatically in the Hugging Face Space.")
+    qr_copy = {
+        "en": "Scan to hear the short summary on a phone.",
+        "kin": "Sikana kugira ngo wumve incamake ngufi kuri telefoni.",
+        "fr": "Scannez pour ecouter le bref resume sur telephone.",
+    }.get((language or "en").lower(), "Scan to hear the short summary on a phone.")
     if not url:
         return (
             "<div class='qr-card qr-fallback'>"
-            "<div class='qr-title'>Phone replay</div>"
-            "<div class='qr-copy'>QR appears automatically in the Hugging Face Space.</div>"
+            f"<div class='qr-title'>{html.escape(fallback_title)}</div>"
+            f"<div class='qr-copy'>{html.escape(fallback_copy)}</div>"
             "</div>"
         )
     encoded = quote(url, safe="")
@@ -176,7 +239,7 @@ def qr_image_html(url: str, label: str) -> str:
     <div class="qr-card">
       <div class="qr-title">{html.escape(label)}</div>
       <img src="https://quickchart.io/qr?size=170&text={encoded}" alt="QR code for voice summary" class="qr-image">
-      <div class="qr-copy">Scan to hear the short summary on a phone.</div>
+      <div class="qr-copy">{html.escape(qr_copy)}</div>
     </div>
     """
 

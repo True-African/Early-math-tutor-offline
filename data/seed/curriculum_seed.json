@@ -5,8 +5,8 @@
     "difficulty": 1,
     "age_band": "5-6",
     "stem_en": "How many apples?",
-    "stem_fr": "Combien de pommes?",
-    "stem_kin": "Pome zingahe?",
+    "stem_fr": "Combien de pommes y a-t-il ?",
+    "stem_kin": "Hari pome zingahe?",
     "visual": "apples_3",
     "answer_int": 3,
     "tts_en": "tts/en/c001.wav",
@@ -19,8 +19,8 @@
     "difficulty": 2,
     "age_band": "5-6",
     "stem_en": "How many goats?",
-    "stem_fr": "Combien de chèvres?",
-    "stem_kin": "Ihene zingahe?",
+    "stem_fr": "Combien de chèvres y a-t-il ?",
+    "stem_kin": "Hari ihene zingahe?",
     "visual": "goats_5",
     "answer_int": 5
   },
@@ -30,8 +30,8 @@
     "difficulty": 3,
     "age_band": "6-7",
     "stem_en": "Which number is bigger: 4 or 7?",
-    "stem_fr": "Quel nombre est plus grand: 4 ou 7?",
-    "stem_kin": "Ni iyihe nimero nini: 4 cyangwa 7?",
+    "stem_fr": "Quel nombre est le plus grand entre 4 et 7 ?",
+    "stem_kin": "Ni iyihe nimero nini hagati ya 4 na 7?",
     "visual": "compare_4_7",
     "answer_int": 7
   },
@@ -41,8 +41,8 @@
     "difficulty": 3,
     "age_band": "6-7",
     "stem_en": "2 plus 3 equals?",
-    "stem_fr": "2 plus 3 égale?",
-    "stem_kin": "2 + 3 ni angahe?",
+    "stem_fr": "Combien font 2 plus 3 ?",
+    "stem_kin": "2 wongeyeho 3 bingana iki?",
     "visual": "beads_2_plus_3",
     "answer_int": 5
   },
@@ -52,6 +52,8 @@
     "difficulty": 5,
     "age_band": "7-8",
     "stem_en": "Sara has 4 mangoes and gets 5 more. How many now?",
+    "stem_fr": "Sara a 4 mangues et en reçoit encore 5. Cela fait combien maintenant ?",
+    "stem_kin": "Sara afite imyembe 4 kandi yabonye izindi 5. Bingana iki byose hamwe?",
     "answer_int": 9,
     "visual": "mangoes_4_plus_5"
   },
@@ -61,6 +63,8 @@
     "difficulty": 4,
     "age_band": "7-8",
     "stem_en": "8 minus 3 equals?",
+    "stem_fr": "Combien font 8 moins 3 ?",
+    "stem_kin": "8 ukuyemo 3 hasigara angahe?",
     "answer_int": 5,
     "visual": "drums_8_minus_3"
   },
@@ -70,6 +74,8 @@
     "difficulty": 6,
     "age_band": "8-9",
     "stem_en": "If a basket has 12 beans and you eat 7, how many remain?",
+    "stem_fr": "Dans un panier, il y a 12 haricots. Si tu en manges 7, combien en reste-t-il ?",
+    "stem_kin": "Mu gatebo harimo ibishyimbo 12, ukaryamo 7. Hasigara bingahe?",
     "answer_int": 5,
     "visual": "beans_basket_12"
   },
@@ -79,6 +85,8 @@
     "difficulty": 6,
     "age_band": "8-9",
     "stem_en": "Three children share 9 cookies equally. How many does each get?",
+    "stem_fr": "Trois enfants se partagent 9 biscuits à parts égales. Chacun en reçoit combien ?",
+    "stem_kin": "Abana batatu bagabana bisikiti 9 bingana. Buri mwana ahabwa zingahe?",
     "answer_int": 3,
     "visual": "kids_3_cookies_9"
   },
@@ -88,6 +96,8 @@
     "difficulty": 8,
     "age_band": "8-9",
     "stem_en": "A tomato costs 100 RWF. Mama has 850 RWF. How many tomatoes can she buy?",
+    "stem_fr": "Une tomate coûte 100 RWF. Mama a 850 RWF. Elle peut acheter combien de tomates ?",
+    "stem_kin": "Inyanya imwe igura 100 RWF. Mama afite 850 RWF. Yagura inyanya zingahe?",
     "answer_int": 8,
     "visual": "rwf_850_tomato_100"
   },
@@ -97,6 +107,8 @@
     "difficulty": 7,
     "age_band": "8-9",
     "stem_en": "What number comes between 47 and 49?",
+    "stem_fr": "Quel nombre se trouve entre 47 et 49 ?",
+    "stem_kin": "Ni iyihe nimero iri hagati ya 47 na 49?",
     "answer_int": 48
   },
   {
@@ -105,6 +117,8 @@
     "difficulty": 8,
     "age_band": "8-9",
     "stem_en": "27 + 14 equals?",
+    "stem_fr": "Combien font 27 plus 14 ?",
+    "stem_kin": "27 wongeyeho 14 bingana iki?",
     "answer_int": 41
   },
   {
@@ -113,6 +127,8 @@
     "difficulty": 9,
     "age_band": "8-9",
     "stem_en": "62 - 28 equals?",
+    "stem_fr": "Combien font 62 moins 28 ?",
+    "stem_kin": "62 ukuyemo 28 hasigara angahe?",
     "answer_int": 34
   }
 ]

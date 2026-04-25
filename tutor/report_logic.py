@@ -125,6 +125,10 @@ def rt(report: dict, key: str) -> str:
     return REPORT_TEXT.get(language, REPORT_TEXT["en"]).get(key, REPORT_TEXT["en"][key])
 
 
+def _report_language(report: dict) -> str:
+    return (report.get("preferred_language") or "en").lower()
+
+
 def build_weekly_report(db_path: Path, learner_id: str, schema_path: Path, output_dir: Path | None = None) -> dict:
     # Build one simple weekly summary from the learner's attempts and current mastery estimates.
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -215,6 +219,7 @@ def _report_fragment(report: dict) -> str:
         pct = int(payload["current"] * 100)
         trend_text, trend_class = _trend_badge(payload["delta"])
         level_text, level_class = _level_badge(pct)
+        language = _report_language(report)
         trend_text = {
             "Up": rt(report, "up"),
             "Watch": rt(report, "watch"),
@@ -231,7 +236,7 @@ def _report_fragment(report: dict) -> str:
               <div class="skill-icon">{html.escape(skill_symbol(skill))}</div>
               <div class="skill-copy">
                 <div class="skill-topline">
-                  <div class="skill-name">{html.escape(skill_label(skill))}</div>
+                  <div class="skill-name">{html.escape(skill_label(skill, language))}</div>
                   <div class="skill-percent">{pct}%</div>
                 </div>
                 <div class="skill-bar">
@@ -253,7 +258,7 @@ def _report_fragment(report: dict) -> str:
         detail=rt(report, "voice_detail"),
     )
     voice_link = report.get("voiced_summary_route") or "#"
-    qr_panel = qr_image_html(report.get("voiced_summary_public_url", ""), rt(report, "phone_voice"))
+    qr_panel = qr_image_html(report.get("voiced_summary_public_url", ""), rt(report, "phone_voice"), _report_language(report))
 
     return f"""
     <div class="parent-report-shell">
@@ -527,13 +532,13 @@ def _report_fragment(report: dict) -> str:
           <div class="scan-card">
             <div class="scan-icon">{html.escape(skill_symbol(best_skill))}</div>
             <div class="scan-title">{html.escape(rt(report, "strongest_now"))}</div>
-            <div class="scan-big">{html.escape(skill_label(best_skill))}</div>
+            <div class="scan-big">{html.escape(skill_label(best_skill, _report_language(report)))}</div>
             <div style="color:#60707d;margin-top:8px">{html.escape(rt(report, "celebrate"))}</div>
           </div>
           <div class="scan-card">
             <div class="scan-icon">{html.escape(skill_symbol(focus_skill))}</div>
             <div class="scan-title">{html.escape(rt(report, "help_first"))}</div>
-            <div class="scan-big">{html.escape(skill_label(focus_skill))}</div>
+            <div class="scan-big">{html.escape(skill_label(focus_skill, _report_language(report)))}</div>
             <div style="color:#60707d;margin-top:8px">{html.escape(rt(report, "start_here"))}</div>
           </div>
         </div>

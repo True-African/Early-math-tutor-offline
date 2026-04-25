@@ -33,11 +33,11 @@ def render_visual_html(item: dict) -> str:
     emoji = EMOJI_MAP.get(kind, "🔷")
     label = html.escape(visual_id.replace("_", " "))
     if count is None or count > 12:
-        return f"<div style='padding:16px;border:1px solid #d9e2e8;border-radius:12px;background:#fff'><b>Scene:</b> {label}</div>"
+        return f"<div style='padding:20px;border:1px solid #d9e2e8;border-radius:16px;background:#fff8ec'><b>Scene:</b> {label}</div>"
     icons = " ".join([emoji] * count)
     return (
-        "<div style='padding:16px;border:1px solid #d9e2e8;border-radius:12px;background:#fff'>"
-        f"<div style='font-size:34px;line-height:1.6'>{icons}</div>"
-        f"<div style='color:#60707d;font-size:13px;margin-top:6px'>{label}</div>"
+        "<div style='padding:22px;border:1px solid #d9e2e8;border-radius:16px;background:#fff8ec'>"
+        f"<div style='font-size:52px;line-height:1.8;word-break:break-word'>{icons}</div>"
+        f"<div style='color:#60707d;font-size:14px;margin-top:8px'>{label}</div>"
         "</div>"
     )

@@ -20,12 +20,117 @@ from tutor.voice import (
 )
 
 
+REPORT_TEXT = {
+    "en": {
+        "weekly_parent_report": "Weekly parent report",
+        "week_of": "Week of",
+        "bars_help": "Look at the bars. Green means strong. Yellow means growing. Red means help first.",
+        "overall_picture": "Overall picture",
+        "one_quick_look": "One quick look",
+        "practice_this_week": "Practice this week",
+        "times": "times",
+        "strongest_now": "Strongest now",
+        "celebrate": "Celebrate this skill today.",
+        "help_first": "Help first",
+        "start_here": "Start home practice here.",
+        "simple_progress": "Simple progress bars",
+        "hear_summary": "Hear the summary",
+        "play_summary": "Play weekly summary",
+        "voice_detail": "Short summary for a parent or caregiver.",
+        "open_voice_page": "Open the voice page",
+        "phone_voice": "Phone voice summary",
+        "praise": "Praise",
+        "praise_copy": "Smile and clap after each correct answer.",
+        "count": "Count",
+        "count_copy": "Count cups, beans, or steps together for one minute.",
+        "repeat": "Repeat",
+        "repeat_copy": "Practice the red skill first before sleeping.",
+        "up": "Up",
+        "watch": "Watch",
+        "steady": "Steady",
+        "strong": "Strong",
+        "growing": "Growing",
+        "help": "Help",
+        "page_title": "Weekly Parent Report",
+    },
+    "kin": {
+        "weekly_parent_report": "Raporo y'umubyeyi y'icyumweru",
+        "week_of": "Icyumweru cyo ku",
+        "bars_help": "Reba imirongo. Icyatsi bivuze akomeye. Umuhondo bivuze ari gutera imbere. Umutuku bivuze akeneye ubufasha mbere.",
+        "overall_picture": "Ishusho rusange",
+        "one_quick_look": "Rebera hamwe",
+        "practice_this_week": "Kwitoza muri iki cyumweru",
+        "times": "inshuro",
+        "strongest_now": "Icyo akomeyeho ubu",
+        "celebrate": "Mumushimire kuri iri bumenyi uyu munsi.",
+        "help_first": "Tangirira hano",
+        "start_here": "Muhere ku myitozo yo mu rugo hano.",
+        "simple_progress": "Imirongo y'iterambere yoroshye",
+        "hear_summary": "Umva incamake",
+        "play_summary": "Tangira incamake y'icyumweru",
+        "voice_detail": "Incamake ngufi y'umubyeyi cyangwa umurera.",
+        "open_voice_page": "Fungura paji y'amajwi",
+        "phone_voice": "Incamake y'amajwi kuri telefoni",
+        "praise": "Shimira",
+        "praise_copy": "Musekere kandi mumukomere amashyi iyo asubije neza.",
+        "count": "Bara",
+        "count_copy": "Mubarane ibikombe, ibishyimbo cyangwa intambwe mu munota umwe.",
+        "repeat": "Subiramo",
+        "repeat_copy": "Mubanze ku bumenyi buri mu mutuku mbere yo kuryama.",
+        "up": "Yazamutse",
+        "watch": "Mukurikirane",
+        "steady": "Ari ku rugero rumwe",
+        "strong": "Akomeye",
+        "growing": "Arakura",
+        "help": "Akeneye ubufasha",
+        "page_title": "Raporo y'umubyeyi y'icyumweru",
+    },
+    "fr": {
+        "weekly_parent_report": "Rapport parent de la semaine",
+        "week_of": "Semaine du",
+        "bars_help": "Regardez les barres. Le vert signifie fort. Le jaune signifie en progression. Le rouge signifie aide en priorité.",
+        "overall_picture": "Vue d'ensemble",
+        "one_quick_look": "Un coup d'œil",
+        "practice_this_week": "Pratique cette semaine",
+        "times": "fois",
+        "strongest_now": "Point fort actuel",
+        "celebrate": "Félicitez cette compétence aujourd'hui.",
+        "help_first": "Aider d'abord",
+        "start_here": "Commencez la pratique à la maison ici.",
+        "simple_progress": "Barres de progression simples",
+        "hear_summary": "Écouter le résumé",
+        "play_summary": "Lire le résumé hebdomadaire",
+        "voice_detail": "Bref résumé pour un parent ou un proche aidant.",
+        "open_voice_page": "Ouvrir la page audio",
+        "phone_voice": "Résumé audio sur téléphone",
+        "praise": "Féliciter",
+        "praise_copy": "Souriez et applaudissez après chaque bonne réponse.",
+        "count": "Compter",
+        "count_copy": "Comptez des tasses, des haricots ou des pas ensemble pendant une minute.",
+        "repeat": "Répéter",
+        "repeat_copy": "Travaillez d'abord la compétence en rouge avant de dormir.",
+        "up": "En hausse",
+        "watch": "À surveiller",
+        "steady": "Stable",
+        "strong": "Fort",
+        "growing": "En progression",
+        "help": "Aider",
+        "page_title": "Rapport parent de la semaine",
+    },
+}
+
+
+def rt(report: dict, key: str) -> str:
+    language = (report.get("preferred_language") or "en").lower()
+    return REPORT_TEXT.get(language, REPORT_TEXT["en"]).get(key, REPORT_TEXT["en"][key])
+
+
 def build_weekly_report(db_path: Path, learner_id: str, schema_path: Path, output_dir: Path | None = None) -> dict:
     # Build one simple weekly summary from the learner's attempts and current mastery estimates.
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     conn = sqlite3.connect(db_path)
     learner_row = conn.execute(
-        "SELECT display_name FROM learners WHERE learner_id = ?",
+        "SELECT display_name, preferred_language FROM learners WHERE learner_id = ?",
         (learner_id,),
     ).fetchone()
     attempts = conn.execute(
@@ -42,6 +147,7 @@ def build_weekly_report(db_path: Path, learner_id: str, schema_path: Path, outpu
     report = {
         "learner_id": learner_id,
         "learner_name": learner_row[0] if learner_row else learner_id,
+        "preferred_language": learner_row[1] if learner_row and len(learner_row) > 1 else "en",
         "week_starting": week_start.isoformat(),
         "sessions": len(recent),
         "skills": {},
@@ -109,6 +215,16 @@ def _report_fragment(report: dict) -> str:
         pct = int(payload["current"] * 100)
         trend_text, trend_class = _trend_badge(payload["delta"])
         level_text, level_class = _level_badge(pct)
+        trend_text = {
+            "Up": rt(report, "up"),
+            "Watch": rt(report, "watch"),
+            "Steady": rt(report, "steady"),
+        }.get(trend_text, trend_text)
+        level_text = {
+            "Strong": rt(report, "strong"),
+            "Growing": rt(report, "growing"),
+            "Help": rt(report, "help"),
+        }.get(level_text, level_text)
         rows.append(
             f"""
             <div class="skill-row">
@@ -133,11 +249,11 @@ def _report_fragment(report: dict) -> str:
     voice_panel = voice_button_html(
         report.get("voiced_summary_text", ""),
         report.get("voiced_summary_language", "rw-RW"),
-        "Play weekly summary",
-        detail="Short Kinyarwanda voice summary for a parent or caregiver.",
+        rt(report, "play_summary"),
+        detail=rt(report, "voice_detail"),
     )
     voice_link = report.get("voiced_summary_route") or "#"
-    qr_panel = qr_image_html(report.get("voiced_summary_public_url", ""), "Phone voice summary")
+    qr_panel = qr_image_html(report.get("voiced_summary_public_url", ""), rt(report, "phone_voice"))
 
     return f"""
     <div class="parent-report-shell">
@@ -387,59 +503,59 @@ def _report_fragment(report: dict) -> str:
       <div class="parent-report-card">
         <div class="parent-hero">
           <div class="hero-panel">
-            <div class="scan-title" style="color:#f5d6b5">Weekly parent report</div>
+            <div class="scan-title" style="color:#f5d6b5">{html.escape(rt(report, "weekly_parent_report"))}</div>
             <h1>{html.escape(report.get("learner_name", report["learner_id"]))}</h1>
             <div class="hero-meta">
-              Week of {html.escape(report["week_starting"])}<br>
-              Look at the bars. Green means strong. Yellow means growing. Red means help first.
+              {html.escape(rt(report, "week_of"))} {html.escape(report["week_starting"])}<br>
+              {html.escape(rt(report, "bars_help"))}
             </div>
           </div>
           <div class="hero-score">
             <div class="score-ring"><div class="score-center">{average_pct}%</div></div>
-            <div class="scan-title">Overall picture</div>
-            <div class="scan-big">One quick look</div>
+            <div class="scan-title">{html.escape(rt(report, "overall_picture"))}</div>
+            <div class="scan-big">{html.escape(rt(report, "one_quick_look"))}</div>
           </div>
         </div>
 
         <div class="scan-grid">
           <div class="scan-card">
             <div class="scan-icon">7</div>
-            <div class="scan-title">Practice this week</div>
-            <div class="scan-big">{report.get("sessions", 0)} times</div>
+            <div class="scan-title">{html.escape(rt(report, "practice_this_week"))}</div>
+            <div class="scan-big">{report.get("sessions", 0)} {html.escape(rt(report, "times"))}</div>
             <div class="day-row">{session_dots}</div>
           </div>
           <div class="scan-card">
             <div class="scan-icon">{html.escape(skill_symbol(best_skill))}</div>
-            <div class="scan-title">Strongest now</div>
+            <div class="scan-title">{html.escape(rt(report, "strongest_now"))}</div>
             <div class="scan-big">{html.escape(skill_label(best_skill))}</div>
-            <div style="color:#60707d;margin-top:8px">Celebrate this skill today.</div>
+            <div style="color:#60707d;margin-top:8px">{html.escape(rt(report, "celebrate"))}</div>
           </div>
           <div class="scan-card">
             <div class="scan-icon">{html.escape(skill_symbol(focus_skill))}</div>
-            <div class="scan-title">Help first</div>
+            <div class="scan-title">{html.escape(rt(report, "help_first"))}</div>
             <div class="scan-big">{html.escape(skill_label(focus_skill))}</div>
-            <div style="color:#60707d;margin-top:8px">Start home practice here.</div>
+            <div style="color:#60707d;margin-top:8px">{html.escape(rt(report, "start_here"))}</div>
           </div>
         </div>
 
         <div class="skills-card">
-          <h2 class="section-title">Simple progress bars</h2>
+          <h2 class="section-title">{html.escape(rt(report, "simple_progress"))}</h2>
           {''.join(rows)}
         </div>
 
         <div class="voice-grid">
           <div class="skills-card">
-            <h2 class="section-title">Hear the summary</h2>
+            <h2 class="section-title">{html.escape(rt(report, "hear_summary"))}</h2>
             {voice_panel}
-            <a class="voice-link" href="{html.escape(voice_link)}" target="_blank" rel="noopener noreferrer">Open the voice page</a>
+            <a class="voice-link" href="{html.escape(voice_link)}" target="_blank" rel="noopener noreferrer">{html.escape(rt(report, "open_voice_page"))}</a>
           </div>
           {qr_panel}
         </div>
 
         <div class="coach-strip">
-          <div class="coach-step"><b>1. Praise</b> Smile and clap after each correct answer.</div>
-          <div class="coach-step"><b>2. Count</b> Count cups, beans, or steps together for one minute.</div>
-          <div class="coach-step"><b>3. Repeat</b> Practice the red skill first before sleeping.</div>
+          <div class="coach-step"><b>1. {html.escape(rt(report, "praise"))}</b> {html.escape(rt(report, "praise_copy"))}</div>
+          <div class="coach-step"><b>2. {html.escape(rt(report, "count"))}</b> {html.escape(rt(report, "count_copy"))}</div>
+          <div class="coach-step"><b>3. {html.escape(rt(report, "repeat"))}</b> {html.escape(rt(report, "repeat_copy"))}</div>
         </div>
       </div>
     </div>
@@ -457,7 +573,7 @@ def render_parent_report_page(report: dict) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Weekly Parent Report</title>
+  <title>{html.escape(rt(report, "page_title"))}</title>
 </head>
 <body style="margin:0;background:#f4f7f8">
   {_report_fragment(report)}

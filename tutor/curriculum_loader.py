@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from tutor import SKILLS
+from tutor.language import TERM_OVERRIDES
 
 
 AGE_BANDS = ["5-6", "6-7", "7-8", "8-9"]
@@ -19,14 +20,30 @@ def save_json(path: Path, payload: object) -> None:
 
 
 def load_seed_curriculum(data_dir: Path) -> list[dict]:
-    return load_json(data_dir / "seed" / "curriculum_seed.json")
+    return [normalize_item_terms(item) for item in load_json(data_dir / "seed" / "curriculum_seed.json")]
 
 
 def load_curriculum(data_dir: Path) -> list[dict]:
     generated = data_dir / "generated_curriculum.json"
     if generated.exists():
-        return load_json(generated)
+        return [normalize_item_terms(item) for item in load_json(generated)]
     return load_seed_curriculum(data_dir)
+
+
+def localized_term(term: str, language: str) -> str:
+    return TERM_OVERRIDES.get(language, {}).get(term, term)
+
+
+def normalize_item_terms(item: dict) -> dict:
+    updated = dict(item)
+    for language, field in (("kin", "stem_kin"), ("fr", "stem_fr")):
+        text = updated.get(field)
+        if not text:
+            continue
+        for source, target in TERM_OVERRIDES.get(language, {}).items():
+            text = text.replace(source, target)
+        updated[field] = text
+    return updated
 
 
 def _counting_item(i: int) -> dict:
@@ -39,8 +56,8 @@ def _counting_item(i: int) -> dict:
         "difficulty": min(9, 1 + i // 2),
         "age_band": AGE_BANDS[min(len(AGE_BANDS) - 1, i // 3)],
         "stem_en": f"How many {obj} do you see?",
-        "stem_fr": f"Combien de {obj} vois-tu?",
-        "stem_kin": f"Ubona {obj} zingahe?",
+        "stem_fr": f"Combien de {localized_term(obj, 'fr')} vois-tu?",
+        "stem_kin": f"Ubona {localized_term(obj, 'kin')} zingahe?",
         "visual": f"{obj}_{answer}",
         "answer_int": answer,
     }
@@ -111,18 +128,20 @@ def _word_problem_item(i: int) -> dict:
     things = ["mangoes", "books", "beans", "oranges", "cups", "goats"]
     name = names[i % len(names)]
     thing = things[i % len(things)]
+    thing_fr = localized_term(thing, "fr")
+    thing_kin = localized_term(thing, "kin")
     start = 2 + i
     add = 1 + (i % 4)
     if i % 2 == 0:
         stem_en = f"{name} has {start} {thing} and gets {add} more. How many now?"
-        stem_fr = f"{name} a {start} {thing} et reçoit {add} de plus. Combien maintenant?"
-        stem_kin = f"{name} afite {start} {thing} kandi abonye izindi {add}. Ubu zose ni zingahe?"
+        stem_fr = f"{name} a {start} {thing_fr} et reçoit {add} de plus. Combien maintenant?"
+        stem_kin = f"{name} afite {start} {thing_kin} kandi abonye izindi {add}. Ubu zose ni zingahe?"
         answer = start + add
         visual = f"{thing}_{start}_plus_{add}"
     else:
         stem_en = f"{name} has {start + add} {thing} and gives away {add}. How many remain?"
-        stem_fr = f"{name} a {start + add} {thing} et en donne {add}. Il en reste combien?"
-        stem_kin = f"{name} afite {start + add} {thing} kandi atanze {add}. Hasigaye zingahe?"
+        stem_fr = f"{name} a {start + add} {thing_fr} et en donne {add}. Il en reste combien?"
+        stem_kin = f"{name} afite {start + add} {thing_kin} kandi atanze {add}. Hasigaye zingahe?"
         answer = start
         visual = f"{thing}_{start + add}_minus_{add}"
     return {

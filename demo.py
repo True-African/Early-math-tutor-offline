@@ -64,6 +64,129 @@ else:
     lora_service = LoRALanguageHead()
 
 
+UI_TEXT = {
+    "en": {
+        "title": "Early Math Tutor Offline",
+        "subtitle": "Adaptive numeracy practice with tap and microphone support.",
+        "answer_label": "Tap an answer",
+        "answer_highlight_label": "Tap one of the answer buttons below",
+        "answer_highlight_info": "The tutor repeated the prompt after 10 seconds of silence and now points the child to these answer buttons.",
+        "skill_label": "Current skill",
+        "difficulty_label": "Difficulty",
+        "prompt_hint": "Listen, count, and tap the matching answer button. You can also say the answer with the microphone.",
+        "first_steps": "How to begin",
+        "step_one": "Choose a language, enter a learner name, and start.",
+        "step_two": "Listen, count, and tap the answer.",
+        "step_three": "Open the caregiver report after an answer is saved.",
+        "shared_tablet": "Shared tablet use",
+        "shared_one": "Each child has a local learner profile on one device.",
+        "shared_two": "Progress stays in local SQLite and survives reboot.",
+        "shared_three": "Learners switch with a simple picker, not email or password.",
+        "shared_four": "Any future sync should send only weekly summary statistics.",
+        "welcome_title": "The opening experience is simple and voice-first",
+        "welcome_line": "The child hears Kinyarwanda first.",
+        "task_line": "A simple counting activity opens with four large answer buttons.",
+        "support_line": "If the child stays silent, the tutor repeats slowly and highlights the taps.",
+        "voice_note": "Current prompt in Kinyarwanda",
+        "silence_title": "The tutor repeats the prompt and guides a tap response",
+        "language_label": "Tutor language",
+        "learner_name_label": "New learner name",
+        "learner_name_placeholder": "Type learner name",
+        "learner_picker_label": "Existing learner",
+        "start_button": "Start or switch learner",
+        "typed_label": "Typed or spoken-word answer",
+        "typed_placeholder": "e.g. five, cinq, esheshatu, 6",
+        "submit_button": "Submit answer",
+        "clear_button": "Clear answer",
+        "mic_heading": "Microphone response",
+        "mic_label": "Record child answer",
+        "mic_button": "Transcribe microphone",
+        "asr_placeholder": "ASR status will appear here.",
+    },
+    "kin": {
+        "title": "Early Math Tutor Offline",
+        "subtitle": "Porogaramu ifasha umwana kubara akoresheje gukanda no kuvuga.",
+        "answer_label": "Kanda igisubizo",
+        "answer_highlight_label": "Kanda kuri bumwe mu bisubizo hasi",
+        "answer_highlight_info": "Mwarimu yasubiyemo ikibazo nyuma y'amasegonda 10 none yerekanye aho ukanda.",
+        "skill_label": "Ubumenyi buriho",
+        "difficulty_label": "Urwego",
+        "prompt_hint": "Tega amatwi, bara, hanyuma ukande igisubizo. Ushobora no kugivuga ukoresheje mikoro.",
+        "first_steps": "Uko watangira",
+        "step_one": "Hitamo ururimi, andika izina ry'umwana, hanyuma utangire.",
+        "step_two": "Tega amatwi, bara, hanyuma ukande igisubizo.",
+        "step_three": "Nyuma yo kubika igisubizo, reba raporo y'umubyeyi.",
+        "shared_tablet": "Gukoresha tabulete isangiwe",
+        "shared_one": "Buri mwana agira umwirondoro we kuri icyo gikoresho.",
+        "shared_two": "Aho ageze bibikwa muri SQLite kandi bikaguma nyuma yo kongera gufungura.",
+        "shared_three": "Abana bahinduranya bakoresheje urutonde rw'amazina aho gukoresha email cyangwa ijambo banga.",
+        "shared_four": "Nihagira koherezwa amakuru, hajye hajyayo imibare y'icyumweru gusa.",
+        "welcome_title": "Gutangira bikorwa mu ijwi kandi byoroheje",
+        "welcome_line": "Umwana abanza kumva Ikinyarwanda.",
+        "task_line": "Hatangizwa igikorwa cyoroheje cyo kubara gifite ibisubizo bine binini.",
+        "support_line": "Umwana acecetse, mwarimu asubiramo gahoro kandi akerekana aho ukanda.",
+        "voice_note": "Ikibazo kiri mu Kinyarwanda",
+        "silence_title": "Mwarimu asubiramo ikibazo kandi akayobora umwana gukanda",
+        "language_label": "Ururimi rwa mwarimu",
+        "learner_name_label": "Izina ry'umwana mushya",
+        "learner_name_placeholder": "Andika izina ry'umwana",
+        "learner_picker_label": "Umwana usanzwe ahari",
+        "start_button": "Tangira cyangwa hindura umwana",
+        "typed_label": "Igisubizo wanditse cyangwa wavuze",
+        "typed_placeholder": "urugero: gatanu, five, cinq, 5",
+        "submit_button": "Ohereza igisubizo",
+        "clear_button": "Siba igisubizo",
+        "mic_heading": "Igisubizo ukoresheje mikoro",
+        "mic_label": "Fata amajwi y'igisubizo",
+        "mic_button": "Hindura amajwi mo inyandiko",
+        "asr_placeholder": "Ubutumwa bwa ASR buraza hano.",
+    },
+    "fr": {
+        "title": "Early Math Tutor Offline",
+        "subtitle": "Pratique adaptative de numératie avec réponse par toucher et microphone.",
+        "answer_label": "Touchez une réponse",
+        "answer_highlight_label": "Touchez une des réponses ci-dessous",
+        "answer_highlight_info": "Le tuteur a répété la consigne après 10 secondes de silence et montre maintenant où toucher.",
+        "skill_label": "Compétence en cours",
+        "difficulty_label": "Difficulté",
+        "prompt_hint": "Écoute, compte et touche la bonne réponse. Tu peux aussi répondre avec le microphone.",
+        "first_steps": "Comment commencer",
+        "step_one": "Choisissez une langue, entrez le nom de l'apprenant, puis démarrez.",
+        "step_two": "Écoutez, comptez, puis touchez la réponse.",
+        "step_three": "Ouvrez le rapport parent après l'enregistrement d'une réponse.",
+        "shared_tablet": "Usage sur tablette partagée",
+        "shared_one": "Chaque enfant a un profil local sur un seul appareil.",
+        "shared_two": "Les progrès restent dans SQLite local et survivent au redémarrage.",
+        "shared_three": "Les apprenants changent via une liste simple, sans email ni mot de passe.",
+        "shared_four": "Toute synchronisation future devrait n'envoyer que des statistiques hebdomadaires.",
+        "welcome_title": "L'ouverture est simple et guidée par la voix",
+        "welcome_line": "L'enfant entend d'abord le kinyarwanda.",
+        "task_line": "Une activité simple de comptage commence avec quatre grands boutons de réponse.",
+        "support_line": "Si l'enfant reste silencieux, le tuteur répète lentement et met les boutons en avant.",
+        "voice_note": "Consigne actuelle en kinyarwanda",
+        "silence_title": "Le tuteur répète la consigne et guide le toucher",
+        "language_label": "Langue du tuteur",
+        "learner_name_label": "Nom du nouvel apprenant",
+        "learner_name_placeholder": "Entrez le nom de l'apprenant",
+        "learner_picker_label": "Apprenant existant",
+        "start_button": "Démarrer ou changer d'apprenant",
+        "typed_label": "Réponse écrite ou prononcée",
+        "typed_placeholder": "ex. cinq, five, esheshatu, 6",
+        "submit_button": "Valider la réponse",
+        "clear_button": "Effacer la réponse",
+        "mic_heading": "Réponse au microphone",
+        "mic_label": "Enregistrer la réponse de l'enfant",
+        "mic_button": "Transcrire le microphone",
+        "asr_placeholder": "Le statut ASR apparaîtra ici.",
+    },
+}
+
+
+def t(preferred_language: str, key: str) -> str:
+    language = (preferred_language or "kin").lower()
+    return UI_TEXT.get(language, UI_TEXT["en"]).get(key, UI_TEXT["en"].get(key, key))
+
+
 def learner_choices() -> list[str]:
     return [f"{name} [{learner_id}]" for learner_id, name in list_learners(DB_PATH)]
 
@@ -86,12 +209,12 @@ def build_options(answer: int, item_id: str) -> list[str]:
     return out
 
 
-def choice_update(options: list[str], highlighted: bool = False):
-    label = "Tap an answer"
+def choice_update(options: list[str], preferred_language: str = "kin", highlighted: bool = False):
+    label = t(preferred_language, "answer_label")
     info = None
     if highlighted:
-        label = "Tap one of the answer buttons below"
-        info = "The tutor repeated the prompt after 10 seconds of silence and now points the child to these answer buttons."
+        label = t(preferred_language, "answer_highlight_label")
+        info = t(preferred_language, "answer_highlight_info")
     return gr.update(choices=options, value=None, label=label, info=info)
 
 
@@ -102,10 +225,10 @@ def prompt_card(item: dict, preferred_language: str) -> str:
     difficulty = item.get("difficulty", 1)
     return f"""
     <div class="hero-card">
-      <div class="eyebrow">Current skill: {skill} - Difficulty {difficulty}</div>
+      <div class="eyebrow">{t(preferred_language, "skill_label")}: {skill} - {t(preferred_language, "difficulty_label")} {difficulty}</div>
       <div class="prompt-text">{prompt}</div>
       {render_visual_html(item)}
-      <div class="hint-line">Listen, count, and tap the matching answer button. You can also say the answer with the microphone.</div>
+      <div class="hint-line">{t(preferred_language, "prompt_hint")}</div>
     </div>
     """
 
@@ -123,45 +246,40 @@ def feedback_card(message: str, positive: bool = True, title: str = "Tutor feedb
     )
 
 
-def scenario_card() -> str:
-    return """
+def scenario_card(preferred_language: str = "kin") -> str:
+    return f"""
     <div class="panel-card opening-panel">
-      <h3>First 90 seconds</h3>
+      <h3>{t(preferred_language, "first_steps")}</h3>
       <div class="journey-grid">
         <div class="journey-step">
           <div class="journey-icon">1</div>
-          <div class="journey-title">Hear</div>
-          <div class="journey-copy">Warm Kinyarwanda greeting first.</div>
+          <div class="journey-title">1</div>
+          <div class="journey-copy">{t(preferred_language, "step_one")}</div>
         </div>
         <div class="journey-step">
           <div class="journey-icon">2</div>
-          <div class="journey-title">Count</div>
-          <div class="journey-copy">One clear counting picture and four big buttons.</div>
+          <div class="journey-title">2</div>
+          <div class="journey-copy">{t(preferred_language, "step_two")}</div>
         </div>
         <div class="journey-step">
           <div class="journey-icon">3</div>
-          <div class="journey-title">Repeat</div>
-          <div class="journey-copy">If silent for 10 seconds, the tutor repeats slowly and highlights the taps.</div>
-        </div>
-        <div class="journey-step">
-          <div class="journey-icon">4</div>
-          <div class="journey-title">Praise</div>
-          <div class="journey-copy">Correct answers get instant praise and the next step.</div>
+          <div class="journey-title">3</div>
+          <div class="journey-copy">{t(preferred_language, "step_three")}</div>
         </div>
       </div>
     </div>
     """
 
 
-def deployment_card() -> str:
-    return """
+def deployment_card(preferred_language: str = "kin") -> str:
+    return f"""
     <div class="panel-card">
-      <h3>Shared tablet deployment</h3>
+      <h3>{t(preferred_language, "shared_tablet")}</h3>
       <ul>
-        <li>Each child has a local learner profile on one device.</li>
-        <li>Progress stays in local SQLite and survives reboot.</li>
-        <li>Learners switch through a simple picker instead of email or password.</li>
-        <li>Any future sync should send only aggregated weekly statistics.</li>
+        <li>{t(preferred_language, "shared_one")}</li>
+        <li>{t(preferred_language, "shared_two")}</li>
+        <li>{t(preferred_language, "shared_three")}</li>
+        <li>{t(preferred_language, "shared_four")}</li>
       </ul>
     </div>
     """
@@ -186,16 +304,16 @@ def refresh_system_dashboard() -> str:
     return system_dashboard_html(dashboard_snapshot(DB_PATH), KT_METRICS_PATH, build_model_status())
 
 
-def learner_panels(learner_id: str, learner_name: str) -> tuple[str, str]:
+def learner_panels(learner_id: str, learner_name: str, preferred_language: str = "en") -> tuple[str, str]:
     report = build_weekly_report(DB_PATH, learner_id, SCHEMA_PATH, OUTPUTS_DIR)
     summary = learner_attempt_summary(DB_PATH, learner_id)
     attempts = recent_attempts(DB_PATH, learner_id, limit=12)
-    return render_parent_report_html(report), learner_dashboard_html(learner_name, summary, attempts)
+    return render_parent_report_html(report), learner_dashboard_html(learner_name, summary, attempts, preferred_language)
 
 
-def export_views(learner_name: str, report_html: str, learner_html: str, system_html: str) -> tuple[str, str]:
-    bundle = export_results_bundle(OUTPUTS_DIR, learner_name, report_html, learner_html, system_html)
-    return export_results_card(bundle), str(bundle["results_bundle"])
+def export_views(learner_name: str, report_html: str, learner_html: str, system_html: str, preferred_language: str = "en") -> tuple[str, str]:
+    bundle = export_results_bundle(OUTPUTS_DIR, learner_name, report_html, learner_html, system_html, preferred_language)
+    return export_results_card(bundle, preferred_language), str(bundle["results_bundle"])
 
 
 def choose_opening_item(curriculum: list[dict]) -> dict:
@@ -229,12 +347,10 @@ def make_state(
 
 
 def session_banner(learner_name: str, preferred_language: str) -> str:
-    language_names = {"kin": "Kinyarwanda", "en": "English", "fr": "French"}
     return f"""
     <div class="banner-card">
-      <div><b>Learner:</b> {learner_name}</div>
-      <div><b>Tutor language:</b> {language_names.get(preferred_language, preferred_language)}</div>
-      <div><b>Mode:</b> Offline adaptive tutor with tap and microphone response</div>
+      <div class="banner-title">{t(preferred_language, "title")}</div>
+      <div class="banner-subtitle">{t(preferred_language, "subtitle")}</div>
     </div>
     """
 
@@ -254,22 +370,14 @@ def answer_label(raw_response: str, parsed: int | None) -> str:
 
 def opening_sequence_card(state: dict | None) -> str:
     if not state or not state.get("current_item"):
-        return """
-        <div class="panel-card">
-          <h3>Judge quick guide</h3>
-          <ul>
-            <li>Start a learner to open the child view.</li>
-            <li>The first-time flow now plays a spoken Kinyarwanda greeting instead of showing text only.</li>
-            <li>After one answer, review the caregiver report, learner progress, model notes, and HTML snapshot tabs.</li>
-          </ul>
-        </div>
-        """
+        return scenario_card("kin")
 
+    preferred_language = state.get("preferred_language", "kin")
     raw_learner_name = state.get("learner_name", "Learner")
     learner_name = html.escape(raw_learner_name)
     item = state["current_item"]
-    raw_question_en = item.get("stem_en", "")
-    raw_question_kin = item.get("stem_kin", item.get("stem_en", ""))
+    raw_question_en = localized_stem(item, "en")
+    raw_question_kin = localized_stem(item, "kin")
     question_en = html.escape(raw_question_en)
     question_kin = html.escape(raw_question_kin)
 
@@ -284,23 +392,19 @@ def opening_sequence_card(state: dict | None) -> str:
             )
             return f"""
             <div class="panel-card opening-panel">
-              <div class="eyebrow">First 90 Seconds - silence support</div>
-              <h3>The tutor repeats the prompt slowly and guides a tap response</h3>
+              <h3>{t(preferred_language, "silence_title")}</h3>
               <div class="journey-grid compact-grid">
                 <div class="journey-step">
                   <div class="journey-icon">RW</div>
-                  <div class="journey-title">Repeat</div>
                   <div class="journey-copy">{question_kin}</div>
                 </div>
                 <div class="journey-step">
                   <div class="journey-icon">EN</div>
-                  <div class="journey-title">Bridge</div>
                   <div class="journey-copy">{question_en}</div>
                 </div>
                 <div class="journey-step">
                   <div class="journey-icon">TAP</div>
-                  <div class="journey-title">Action</div>
-                  <div class="journey-copy">The large answer buttons become the easiest next move.</div>
+                  <div class="journey-copy">{t(preferred_language, "step_two")}</div>
                 </div>
               </div>
               {silence_voice}
@@ -316,53 +420,78 @@ def opening_sequence_card(state: dict | None) -> str:
         )
         return f"""
         <div class="panel-card opening-panel">
-          <div class="eyebrow">First 90 Seconds - first time learner</div>
-          <h3>The opening experience is now voice-first, simple, and child-sized</h3>
+          <h3>{t(preferred_language, "welcome_title")}</h3>
           <div class="journey-grid compact-grid">
             <div class="journey-step">
               <div class="journey-icon">RW</div>
-              <div class="journey-title">Welcome</div>
-              <div class="journey-copy">Muraho {learner_name}. The child hears Kinyarwanda first.</div>
+              <div class="journey-copy">Muraho {learner_name}. {t(preferred_language, "welcome_line")}</div>
             </div>
             <div class="journey-step">
               <div class="journey-icon">123</div>
-              <div class="journey-title">Task</div>
-              <div class="journey-copy">A simple goat-counting activity opens with four large tap answers.</div>
+              <div class="journey-copy">{t(preferred_language, "task_line")}</div>
             </div>
             <div class="journey-step">
               <div class="journey-icon">10s</div>
-              <div class="journey-title">Support</div>
-              <div class="journey-copy">If the child stays silent, the tutor repeats slowly and highlights the taps.</div>
+              <div class="journey-copy">{t(preferred_language, "support_line")}</div>
             </div>
           </div>
-          <div class="voice-inline-note">Current prompt in Kinyarwanda: {question_kin}</div>
+          <div class="voice-inline-note">{t(preferred_language, "voice_note")}: {question_kin}</div>
           {welcome_voice}
         </div>
         """
 
-    if state.get("first_run_complete"):
-        return """
-        <div class="panel-card opening-panel">
-          <div class="eyebrow">Opening flow complete</div>
-          <h3>The first-run child experience has finished</h3>
-          <p>The tutor already delivered the Kinyarwanda-first greeting, the English bridge, the simple counting task, and the silence support path.</p>
-          <p>The app is now continuing with normal adaptive practice based on the learner's answers.</p>
-        </div>
-        """
+    return scenario_card(preferred_language)
 
-    return """
-    <div class="panel-card opening-panel">
-      <div class="eyebrow">Hosted demo guide</div>
-      <h3>What judges should look for</h3>
-      <ul>
-        <li><b>Tutor Activity:</b> the child-facing task flow with tap-first interaction and optional microphone input.</li>
-        <li><b>Caregiver Report:</b> the weekly report in low-literacy language with voice replay and QR support.</li>
-        <li><b>Learner Progress:</b> stored attempts, skill trend, and language mix.</li>
-        <li><b>Model & Offline Notes:</b> offline constraints, ASR, LoRA, and deployment notes.</li>
-        <li><b>Download HTML Snapshot:</b> one standalone HTML dashboard for quick review outside the app.</li>
-      </ul>
-    </div>
-    """
+
+def refresh_language_ui(preferred_language: str, state: dict):
+    preferred_language = (preferred_language or "kin").lower()
+    state = dict(state or {})
+    if state.get("current_item"):
+        state["preferred_language"] = preferred_language
+        opening_html = opening_sequence_card(state)
+        prompt_html = prompt_card(state["current_item"], preferred_language)
+        choice_html = choice_update(
+            state.get("current_options") or [],
+            preferred_language,
+            highlighted=bool(state.get("silence_prompt_shown")),
+        )
+        banner_html = session_banner(state.get("learner_name", "Learner"), preferred_language)
+        report_html, learner_html = learner_panels(state["learner_id"], state["learner_name"], preferred_language)
+        system_html = system_dashboard_html(dashboard_snapshot(DB_PATH), KT_METRICS_PATH, build_model_status(), preferred_language)
+        export_html, _ = export_views(state["learner_name"], report_html, learner_html, system_html, preferred_language)
+    else:
+        opening_html = scenario_card(preferred_language)
+        prompt_html = scenario_card(preferred_language)
+        choice_html = gr.update(label=t(preferred_language, "answer_label"), info=None)
+        banner_html = session_banner("No learner yet", preferred_language)
+        report_html = "<p style='color:#60707d'>Report will appear after a learner starts answering.</p>"
+        learner_html = "<p style='color:#60707d'>Progress will appear after attempts are saved.</p>"
+        system_html = system_dashboard_html(dashboard_snapshot(DB_PATH), KT_METRICS_PATH, build_model_status(), preferred_language)
+        export_html = "<p style='color:#60707d'>Start a learner session to generate the HTML dashboard.</p>"
+
+    return (
+        banner_html,
+        opening_html,
+        prompt_html,
+        choice_html,
+        report_html,
+        learner_html,
+        system_html,
+        export_html,
+        gr.update(label=t(preferred_language, "typed_label"), placeholder=t(preferred_language, "typed_placeholder")),
+        gr.update(label=t(preferred_language, "learner_name_label"), placeholder=t(preferred_language, "learner_name_placeholder")),
+        gr.update(label=t(preferred_language, "learner_picker_label")),
+        gr.update(label=t(preferred_language, "language_label")),
+        gr.update(value=t(preferred_language, "start_button")),
+        gr.update(value=t(preferred_language, "submit_button")),
+        gr.update(value=t(preferred_language, "clear_button")),
+        f"### {t(preferred_language, 'mic_heading')}",
+        gr.update(label=t(preferred_language, "mic_label")),
+        gr.update(value=t(preferred_language, "mic_button")),
+        t(preferred_language, "asr_placeholder"),
+        deployment_card(preferred_language),
+        state,
+    )
 
 
 def start_session(learner_name: str, learner_choice: str, preferred_language: str):
@@ -388,16 +517,16 @@ def start_session(learner_name: str, learner_choice: str, preferred_language: st
     state["first_run_complete"] = False
     state["current_options"] = options
 
-    report_html, learner_html = learner_panels(learner_id, learner_name)
-    system_html = refresh_system_dashboard()
-    export_html, export_file = export_views(learner_name, report_html, learner_html, system_html)
+    report_html, learner_html = learner_panels(learner_id, learner_name, preferred_language)
+    system_html = system_dashboard_html(dashboard_snapshot(DB_PATH), KT_METRICS_PATH, build_model_status(), preferred_language)
+    export_html, export_file = export_views(learner_name, report_html, learner_html, system_html, preferred_language)
     asr_status = asr_service.status()["message"]
 
     return (
         session_banner(learner_name, preferred_language),
         opening_sequence_card(state),
         prompt_card(item, preferred_language),
-        choice_update(options),
+        choice_update(options, preferred_language),
         "",
         feedback_card(
             "The first question is shown above. After each answer, this box will explain the last question while the next one loads.",
@@ -428,7 +557,7 @@ def handle_silence_timeout(state: dict):
     return (
         opening_sequence_card(state),
         feedback_card(feedback_text, positive=True, title="Silence support after 10 seconds"),
-        choice_update(options, highlighted=True),
+        choice_update(options, state.get("preferred_language", "kin"), highlighted=True),
         gr.update(active=False),
         state,
     )
@@ -448,13 +577,13 @@ def submit_answer(choice: str, typed_answer: str, state: dict):
         return (
             session_banner("No learner yet", "kin"),
             opening_sequence_card(None),
-            scenario_card(),
+            scenario_card("kin"),
             gr.update(choices=[], value=None),
             "",
             feedback_card("Start a learner session first.", positive=False, title="Action needed"),
             "<p style='color:#60707d'>The weekly parent report preview appears here after a learner starts answering items.</p>",
             "<p style='color:#60707d'>Learner progress dashboard appears here after attempts are saved.</p>",
-            refresh_system_dashboard(),
+            system_dashboard_html(dashboard_snapshot(DB_PATH), KT_METRICS_PATH, build_model_status(), "kin"),
             "<p style='color:#60707d'>Start a learner session to generate one standalone HTML dashboard in the outputs folder.</p>",
             None,
             "ASR status will appear here.",
@@ -496,16 +625,16 @@ def submit_answer(choice: str, typed_answer: str, state: dict):
     state["awaiting_first_answer"] = False
     state["first_run_complete"] = bool(state.get("first_run"))
 
-    report_html, learner_html = learner_panels(state["learner_id"], state["learner_name"])
-    system_html = refresh_system_dashboard()
-    export_html, export_file = export_views(state["learner_name"], report_html, learner_html, system_html)
+    report_html, learner_html = learner_panels(state["learner_id"], state["learner_name"], state["preferred_language"])
+    system_html = system_dashboard_html(dashboard_snapshot(DB_PATH), KT_METRICS_PATH, build_model_status(), state["preferred_language"])
+    export_html, export_file = export_views(state["learner_name"], report_html, learner_html, system_html, state["preferred_language"])
     asr_status = asr_service.status()["message"]
 
     return (
         session_banner(state["learner_name"], state["preferred_language"]),
         opening_sequence_card(state),
         prompt_card(next_item, state["preferred_language"]),
-        choice_update(options),
+        choice_update(options, state["preferred_language"]),
         "",
         feedback_card(feedback_text, positive=correct, title="Previous answer result"),
         report_html,
@@ -527,7 +656,9 @@ body, .gradio-container {background:#f4f7f8 !important; font-family:Arial,Helvet
 .eyebrow {font-size:12px;color:#60707d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
 .prompt-text {font-size:28px;font-weight:700;line-height:1.3;margin-bottom:14px;color:#17212b}
 .hint-line {margin-top:10px;color:#60707d;font-size:13px}
-.banner-card {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;background:#0f3d45;color:#f7fbfc;padding:14px 16px;border-radius:16px}
+.banner-card {display:block;background:linear-gradient(135deg,#0f3d45 0%,#155660 100%);color:#f7fbfc;padding:18px 20px;border-radius:18px;margin-bottom:10px}
+.banner-title {font-size:30px;font-weight:800;line-height:1.1}
+.banner-subtitle {margin-top:6px;color:#d6e7ea;font-size:15px}
 .panel-card {background:#ffffff;border:1px solid #dce5ea;border-radius:14px;padding:16px}
 .opening-panel {margin-bottom:14px;background:#fff8ec;border-color:#f7c37a}
 .journey-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
@@ -542,41 +673,38 @@ body, .gradio-container {background:#f4f7f8 !important; font-family:Arial,Helvet
 .voice-inline-note {margin-bottom:12px;color:#4f5f6b}
 #answer-buttons label {min-height:72px !important;border-radius:18px !important;border:2px solid #dce5ea !important;background:#fff !important;font-size:24px !important;font-weight:800 !important;display:flex !important;align-items:center !important;justify-content:center !important}
 #answer-buttons label:has(input:checked) {border-color:#ef6c2f !important;background:#fff4ea !important}
-@media (max-width: 900px) {.banner-card,.journey-grid,.compact-grid {grid-template-columns:1fr}}
+@media (max-width: 900px) {.journey-grid,.compact-grid {grid-template-columns:1fr}}
 """
 
 
 with gr.Blocks(title="Early Math Tutor Offline") as demo:
     app_state = gr.State({})
-    gr.Markdown(
-        """
-        <div class="app-shell">
-          <h1 style="margin-bottom:4px">Early Math Tutor Offline</h1>
-          <p style="margin-top:0;color:#60707d">Offline early numeracy tutor with adaptive practice, optional microphone input, learner dashboards, and parent-ready reporting.</p>
-          <p style="margin-top:6px;color:#465864"><b>Judge quick path:</b> start a learner, answer one item, then open the caregiver report, learner progress, model notes, and HTML snapshot tabs.</p>
-        </div>
-        """
-    )
+    status_html = gr.HTML(session_banner("No learner yet", "kin"))
 
     with gr.Row():
-        learner_name = gr.Textbox(label="New learner name", placeholder="Type learner name")
-        learner_picker = gr.Dropdown(label="Existing learner", choices=learner_choices(), allow_custom_value=False)
-        preferred_language = gr.Dropdown(label="Tutor language", choices=["kin", "en", "fr"], value="kin")
-        start_btn = gr.Button("Start or switch learner", variant="primary")
-
-    status_html = gr.HTML(session_banner("No learner yet", "kin"))
+        with gr.Column(scale=9):
+            with gr.Row():
+                learner_name = gr.Textbox(label=t("kin", "learner_name_label"), placeholder=t("kin", "learner_name_placeholder"))
+                learner_picker = gr.Dropdown(label=t("kin", "learner_picker_label"), choices=learner_choices(), allow_custom_value=False)
+                start_btn = gr.Button(t("kin", "start_button"), variant="primary")
+        with gr.Column(scale=3):
+            preferred_language = gr.Dropdown(
+                label=t("kin", "language_label"),
+                choices=[("Kinyarwanda", "kin"), ("English", "en"), ("Français", "fr")],
+                value="kin",
+            )
 
     with gr.Tabs():
         with gr.Tab("Tutor Activity"):
             opening_html = gr.HTML(opening_sequence_card(None))
             with gr.Row():
                 with gr.Column(scale=7):
-                    prompt_html = gr.HTML(scenario_card())
-                    choice = gr.Radio(label="Tap an answer", choices=[], elem_id="answer-buttons")
-                    typed_answer = gr.Textbox(label="Typed or spoken-word answer", placeholder="e.g. five, cinq, esheshatu, 6")
+                    prompt_html = gr.HTML(scenario_card("kin"))
+                    choice = gr.Radio(label=t("kin", "answer_label"), choices=[], elem_id="answer-buttons")
+                    typed_answer = gr.Textbox(label=t("kin", "typed_label"), placeholder=t("kin", "typed_placeholder"))
                     with gr.Row():
-                        submit_btn = gr.Button("Submit answer", variant="primary")
-                        clear_btn = gr.Button("Clear answer")
+                        submit_btn = gr.Button(t("kin", "submit_button"), variant="primary")
+                        clear_btn = gr.Button(t("kin", "clear_button"))
                     feedback_html = gr.HTML(
                         feedback_card(
                             "The first activity will appear here after you start a learner session.",
@@ -585,11 +713,11 @@ with gr.Blocks(title="Early Math Tutor Offline") as demo:
                         )
                     )
                 with gr.Column(scale=5):
-                    gr.Markdown("### Microphone response")
-                    mic = gr.Audio(label="Record child answer", sources=["microphone"], type="numpy")
-                    use_mic_btn = gr.Button("Transcribe microphone")
-                    asr_status = gr.Markdown("ASR status will appear here.")
-                    gr.HTML(deployment_card())
+                    mic_heading = gr.Markdown(f"### {t('kin', 'mic_heading')}")
+                    mic = gr.Audio(label=t("kin", "mic_label"), sources=["microphone"], type="numpy")
+                    use_mic_btn = gr.Button(t("kin", "mic_button"))
+                    asr_status = gr.Markdown(t("kin", "asr_placeholder"))
+                    deployment_html = gr.HTML(deployment_card("kin"))
 
         with gr.Tab("Caregiver Report"):
             report_html = gr.HTML(
@@ -631,6 +759,33 @@ with gr.Blocks(title="Early Math Tutor Offline") as demo:
             silence_timer,
             app_state,
             learner_picker,
+        ],
+    )
+    preferred_language.change(
+        refresh_language_ui,
+        inputs=[preferred_language, app_state],
+        outputs=[
+            status_html,
+            opening_html,
+            prompt_html,
+            choice,
+            report_html,
+            learner_html,
+            system_html,
+            html_exports,
+            typed_answer,
+            learner_name,
+            learner_picker,
+            preferred_language,
+            start_btn,
+            submit_btn,
+            clear_btn,
+            mic_heading,
+            mic,
+            use_mic_btn,
+            asr_status,
+            deployment_html,
+            app_state,
         ],
     )
     use_mic_btn.click(

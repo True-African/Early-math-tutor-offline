@@ -52,18 +52,37 @@ def skill_symbol(skill: str) -> str:
     return SKILL_SYMBOLS.get(skill, "*")
 
 
-def _speak_js(message: str, language_tag: str, rate: float = 0.9, pitch: float = 1.0) -> str:
+def _speak_js(message: str, language_tag: str, rate: float = 0.9, pitch: float = 1.08) -> str:
     payload = json.dumps(message)
     lang = json.dumps(language_tag)
     return (
         "(()=>{"
         "if(!('speechSynthesis' in window)){return;}"
-        "window.speechSynthesis.cancel();"
+        "const synth=window.speechSynthesis;"
+        f"const targetLang={lang};"
+        "const pickVoice=(voices)=>{"
+        "const femaleHint=/(female|zira|aria|jenny|sara|susan|salli|maria|marie|amy|emma|sophie|alice|eva)/i;"
+        "const exact=voices.filter(v=>v.lang===targetLang);"
+        "const family=voices.filter(v=>v.lang && v.lang.toLowerCase().startsWith(targetLang.slice(0,2).toLowerCase()));"
+        "const pool=(exact.length?exact:family.length?family:voices);"
+        "return pool.find(v=>femaleHint.test(v.name))||pool[0]||null;"
+        "};"
+        "const speakNow=()=>{"
+        "const voices=synth.getVoices();"
+        "synth.cancel();"
         f"const utterance=new SpeechSynthesisUtterance({payload});"
         f"utterance.lang={lang};"
         f"utterance.rate={rate};"
         f"utterance.pitch={pitch};"
-        "window.speechSynthesis.speak(utterance);"
+        "const selected=pickVoice(voices);"
+        "if(selected){utterance.voice=selected;}"
+        "synth.speak(utterance);"
+        "};"
+        "if(!synth.getVoices().length){"
+        "const handle=()=>{synth.removeEventListener('voiceschanged',handle);speakNow();};"
+        "synth.addEventListener('voiceschanged',handle,{once:true});"
+        "}"
+        "speakNow();"
         "})()"
     )
 

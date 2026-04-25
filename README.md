@@ -28,34 +28,6 @@ git clone https://huggingface.co/spaces/Iyumva/Early-math-tutor-offline
 cd Early-math-tutor-offline
 ```
 
-## Repository layout
-
-The root is now kept intentionally small so a new reader can spot the runnable files quickly.
-
-- `app.py`: Hugging Face Space entrypoint
-- `demo.py`: local Gradio app entrypoint
-- `parent_report.py`: standalone parent-report generator
-- `tutor/`: main application package
-- `scripts/`: setup, evaluation, and model-prep utilities grouped by purpose
-- `data/`: seed files and generated curriculum
-- `assets/`: optional static assets for augmentation and local media workflows
-- `models/`: local model placeholders and setup notes only
-- `outputs/`: generated dashboards, reports, and evaluation artifacts
-- `docs/`: project notes, audit files, and supporting writeups
-
-If you only want to run the app, focus on `README.md`, `demo.py`, `app.py`, `tutor/`, and `scripts/`.
-
-Generated files are intentionally kept out of Git where possible so the repo stays easy to read.
-
-Inside `scripts/`, utilities are now grouped like this:
-
-- `scripts/models/`: local model download, quantization, and LoRA training
-- `scripts/eval/`: evaluation utilities
-- `scripts/data/`: curriculum and demo-data generation
-- `scripts/audio/`: child-speech augmentation
-
-Top-level script commands such as `python scripts/setup_local_models.py` still work through compatibility wrappers.
-
 ## What this project currently does
 
 - runs offline at inference time

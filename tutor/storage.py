@@ -53,6 +53,20 @@ def list_learners(db_path: Path) -> list[tuple[str, str]]:
     return rows
 
 
+def latest_learner(db_path: Path) -> tuple[str, str] | None:
+    conn = sqlite3.connect(db_path)
+    row = conn.execute(
+        """
+        SELECT learner_id, display_name
+        FROM learners
+        ORDER BY updated_at DESC, created_at DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    conn.close()
+    return (row[0], row[1]) if row else None
+
+
 def get_or_create_learner(db_path: Path, display_name: str, preferred_language: str, default_mastery: dict[str, float]) -> tuple[str, str]:
     display_name = display_name.strip() or "Learner"
     conn = sqlite3.connect(db_path)

@@ -8,7 +8,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from tutor.report_logic import build_weekly_report, render_parent_report_page
-from tutor.storage import list_learners
+from tutor.storage import latest_learner, list_learners
 
 DB_PATH = ROOT / "data" / "local_store.sqlite"
 SCHEMA_PATH = ROOT / "data" / "seed" / "parent_report_schema.json"
@@ -21,12 +21,13 @@ def main() -> None:
     if not learners:
         print("No learners found yet. Run demo.py and answer at least one item first.")
         return
-    learner_id, learner_name = learners[0]
+    active = latest_learner(DB_PATH)
+    learner_id, learner_name = active or learners[0]
     report = build_weekly_report(DB_PATH, learner_id, SCHEMA_PATH, ROOT / "outputs")
     html = render_parent_report_page(report)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(html, encoding="utf-8")
-    print(f"Saved parent report for {learner_name} to {OUTPUT_PATH}")
+    print(f"Saved parent report for latest learner {learner_name} to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":

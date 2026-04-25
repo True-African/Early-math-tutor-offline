@@ -66,42 +66,120 @@ Create a virtual environment:
 python -m venv venv
 ```
 
-Activate it in your shell:
+Activate it using the command for your terminal:
 
-```powershell
-.\venv\Scripts\Activate.ps1
-```
-
-```cmd
-venv\Scripts\activate.bat
-```
+Windows Git Bash:
 
 ```bash
 source venv/Scripts/activate
 ```
 
-Install the project and run the tutor:
+Windows PowerShell:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Windows Command Prompt:
+
+```cmd
+venv\Scripts\activate.bat
+```
+
+Linux, macOS, or Colab:
+
+```bash
+source venv/bin/activate
+```
+
+Install the project:
 
 ```bash
 pip install -r requirements.txt
-python demo.py
 ```
 
-Then open the local Gradio URL shown in the terminal.
+## Online test flow
 
-## Advanced local model activation
+Use this path if you want to test the app in Hugging Face without running local models.
 
-Install the advanced dependencies:
+1. Open the Hugging Face Space:
+
+   <https://huggingface.co/spaces/Iyumva/Early-math-tutor-offline>
+
+2. Wait for the Gradio app to load.
+3. In the top area, type a learner name or choose an existing learner.
+4. Click `Start or switch learner`.
+5. In `Tutor Activity`, answer at least one item.
+6. Open `Caregiver Report` to see the parent-facing report online.
+7. Open `Learner Progress` to see learner metrics online.
+8. Open `Model & Offline Notes` to see model readiness and system notes online.
+9. Open `Download HTML Snapshot` if you want the generated standalone results file from the hosted app.
+
+Online entrypoint:
+
+```bash
+app.py
+```
+
+## Offline test flow
+
+Use this path if you want to run the app locally with the local model setup.
+
+1. Install the advanced dependencies:
 
 ```bash
 pip install -r requirements-advanced.txt
 ```
 
-Download the small local models used by the advanced path and build the quantized ASR export:
+2. Download the local models and prepare the quantized ASR path:
 
 ```bash
 python scripts/setup_local_models.py
 ```
+
+3. Start the local app:
+
+```bash
+python demo.py
+```
+
+4. Open the local Gradio app in your browser:
+
+```text
+http://127.0.0.1:7860
+```
+
+5. Type a learner name or choose an existing learner.
+6. Click `Start or switch learner`.
+7. Answer at least one item.
+8. Open `Caregiver Report` in the running app to see the parent report offline.
+9. Open `Learner Progress` in the running app to see learner metrics offline.
+10. Open `Download HTML Snapshot` in the running app to reveal the exported file path.
+11. Open the standalone offline report bundle directly from:
+
+```text
+outputs/results_dashboard.html
+```
+
+Offline entrypoint:
+
+```bash
+demo.py
+```
+
+Standalone parent-report script:
+
+```bash
+python parent_report.py
+```
+
+This writes:
+
+```text
+outputs/sample_parent_report.html
+```
+
+## Advanced local model activation
 
 Convert an already-downloaded Whisper model to the int8 edge export manually:
 
@@ -126,9 +204,11 @@ Runtime note:
 - the app automatically prefers `models/asr_quantized/` through `faster-whisper` when that folder exists
 - because base Whisper does not expose a Kinyarwanda language token, the app uses automatic language detection for `kin` on the Whisper backends
 
-## How to see results in HTML
+## Reports and exported files
 
-When you start a learner session or submit an answer, the app refreshes:
+Keep this section in the README because it tells users exactly which generated files to open after they run the app locally.
+
+When you start a learner session or submit an answer in the offline app, the main exported dashboard refreshes:
 
 - [outputs/results_dashboard.html](outputs/results_dashboard.html)
 
@@ -139,7 +219,19 @@ That file contains:
 - the system dashboard
 - auto-refresh every 4 seconds while it is open in the browser
 
-Inside the Gradio app, the **HTML Results** tab also points to this same file.
+Inside the Gradio app, the `Download HTML Snapshot` tab points to this same file.
+
+If you want one standalone parent-only page, run:
+
+```bash
+python parent_report.py
+```
+
+That writes:
+
+- [outputs/sample_parent_report.html](outputs/sample_parent_report.html)
+
+The parent-only script now uses the most recently active learner instead of always defaulting to the first seeded learner.
 
 ## Useful commands
 

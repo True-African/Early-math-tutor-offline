@@ -8,11 +8,13 @@ try:
     import torch  # type: ignore
     from peft import PeftModel  # type: ignore
     from transformers import AutoModelForCausalLM, AutoTokenizer  # type: ignore
+    from transformers.utils import logging as transformers_logging  # type: ignore
 except Exception:  # pragma: no cover - optional dependency
     torch = None
     PeftModel = None
     AutoModelForCausalLM = None
     AutoTokenizer = None
+    transformers_logging = None
 
 
 def generate_instruction_examples(curriculum: list[dict]) -> list[dict]:
@@ -69,12 +71,16 @@ class LoRALanguageHead:
                 missing.append("adapter path")
             self.load_error = "LoRA path is not ready yet: missing " + ", ".join(missing) + "."
             return False
+        previous_verbosity = None
         try:
             base_model_path = str(self.base_model)
             local_only = Path(base_model_path).exists()
             self.tokenizer = AutoTokenizer.from_pretrained(base_model_path, local_files_only=local_only)
             if self.tokenizer.pad_token is None:
                 self.tokenizer.pad_token = self.tokenizer.eos_token
+            if transformers_logging is not None:
+                previous_verbosity = transformers_logging.get_verbosity()
+                transformers_logging.set_verbosity_error()
             base = AutoModelForCausalLM.from_pretrained(base_model_path, local_files_only=local_only)
             self.model = PeftModel.from_pretrained(base, self.adapter_path)
             self.model.eval()
@@ -82,6 +88,9 @@ class LoRALanguageHead:
         except Exception as exc:  # pragma: no cover - optional dependency path
             self.load_error = str(exc)
             return False
+        finally:
+            if transformers_logging is not None and previous_verbosity is not None:
+                transformers_logging.set_verbosity(previous_verbosity)
 
     def template_feedback(self, item: dict, correct: bool, language: str) -> str:
         # This fallback keeps the app stable even when the tiny local language model is weak.
